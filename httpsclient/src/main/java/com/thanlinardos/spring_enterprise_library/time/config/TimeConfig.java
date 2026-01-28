@@ -1,5 +1,6 @@
-package com.thanlinardos.spring_enterprise_library.config;
+package com.thanlinardos.spring_enterprise_library.time.config;
 
+import com.thanlinardos.spring_enterprise_library.time.SpringEnterpriseLibraryTimePackage;
 import com.thanlinardos.spring_enterprise_library.time.TimeProviderImpl;
 import com.thanlinardos.spring_enterprise_library.time.api.TimeProvider;
 import com.thanlinardos.spring_enterprise_library.time.properties.TimeProviderProperties;
@@ -19,7 +20,7 @@ import org.springframework.context.annotation.FilterType;
  */
 @Configuration
 @ComponentScan(
-        basePackages = {"com.thanlinardos.spring_enterprise_library.time"},
+        basePackageClasses = SpringEnterpriseLibraryTimePackage.class,
         excludeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)}
 )
 @EnableConfigurationProperties(TimeProviderProperties.class)

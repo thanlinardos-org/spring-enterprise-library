@@ -72,7 +72,7 @@ public interface PrivilegedResource {
      * @return Integer value of the calculated privilege level,
      * or Integer.MAX_VALUE if the list is empty, representing the lowest privilege level.
      */
-    static <T extends Role> int calcPrivilegeLvlFromRoles(List<T> roles) {
+    static <T extends Role> int calcPrivilegeLvlFromRoles(Collection<T> roles) {
         return roles.stream()
                 .map(Role::getPrivilegeLvl)
                 .min(Integer::compareTo)

@@ -4,6 +4,7 @@ import com.thanlinardos.spring_enterprise_library.model.api.WithId;
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
@@ -14,20 +15,11 @@ import java.io.Serializable;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @SuperBuilder
 public class BasicIdModel implements Serializable, WithId {
 
-    /**
-     * The unique identifier for the model.
-     */
     private Long id;
-
-    /**
-     * Default constructor.
-     */
-    public BasicIdModel() {
-        // Default constructor
-    }
 
     /**
      * Constructs a BasicIdModel from a BasicIdJpa entity.

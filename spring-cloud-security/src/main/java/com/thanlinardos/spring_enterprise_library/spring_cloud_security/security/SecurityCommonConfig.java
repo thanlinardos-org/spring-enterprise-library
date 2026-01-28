@@ -39,7 +39,7 @@ import static com.thanlinardos.spring_enterprise_library.spring_cloud_security.c
 @Getter
 public class SecurityCommonConfig<T extends Role> {
 
-    @Value("${angular-ui.url}")
+    @Value("${thanlinardos.springenterpriselibrary.angular-ui.url}")
     private String angularUiUrl;
     @Value("${spring.security.oauth2.resourceserver.opaquetoken.introspection-uri}")
     private String introspectionUri;
@@ -47,9 +47,9 @@ public class SecurityCommonConfig<T extends Role> {
     private String clientId;
     @Value("${spring.security.oauth2.resourceserver.opaquetoken.client-secret}")
     private String clientSecret;
-    @Value("${oauth2.keycloak.token}")
+    @Value("${thanlinardos.springenterpriselibrary.oauth2.keycloak.token}")
     private OAuth2TokenType tokenType;
-    @Value("${oauth2.auth-server}")
+    @Value("${thanlinardos.springenterpriselibrary.oauth2.auth-server}")
     private OAuth2AuthServerType authServer;
 
     private final RoleService<T> roleService;

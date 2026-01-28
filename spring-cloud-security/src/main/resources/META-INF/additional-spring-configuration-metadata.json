@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "scheduling.enabled",
+      "type": "java.lang.String",
+      "description": "Enable scheduling tasks."
+    },
+    {
+      "name": "thanlinardos.springenterpriselibrary.secrets.refresh.enabled",
+      "type": "java.lang.String",
+      "description": "Enable refreshing secrets feature for a cloud config client."
+    },
+    {
+      "name": "thanlinardos.springenterpriselibrary.oauth2.client-certificate-path-format",
+      "type": "java.lang.String",
+      "description": "Defines the path format where to find client certificates for OAuth2 client authentication."
+    }
+  ] }

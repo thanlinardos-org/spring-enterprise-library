@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.thanlinardos.spring_enterprise_library.objects.utils.PredicateUtils.isNotContainedIn;
+
 /**
  * Utility class for handling collections.
  */
@@ -554,6 +556,21 @@ public class CollectionUtils {
         return base.stream()
                 .filter(baseElement -> notContains(filter, filterElement -> removeIf.test(baseElement, filterElement)))
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Subtracts the elements in {@code collection} from {@code base} by checking containment using equals method
+     * and returns the result as a Set.
+     *
+     * @param base       the base collection
+     * @param collection the collection to subtract from base
+     * @param <T>        The type of the elements of the input Collection (and output Set).
+     * @return the result of the subtraction as a Set.
+     */
+    public static <T> Set<T> subtractToSet(Collection<T> base, Collection<T> collection) {
+        return base.stream()
+                .filter(isNotContainedIn(Function.identity(), collection))
+                .collect(Collectors.toSet());
     }
 
     /**

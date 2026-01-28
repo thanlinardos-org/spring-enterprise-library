@@ -1,6 +1,6 @@
 # Example configuration for Spring Enterprise Library
 thanlinardos:
-  spring_enterprise_library:
+  springenterpriselibrary:
     time:
       time-zone: UTC
       accuracy: MILLISECONDS

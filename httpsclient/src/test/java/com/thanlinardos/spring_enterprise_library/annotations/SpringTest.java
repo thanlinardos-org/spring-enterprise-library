@@ -1,6 +1,6 @@
 package com.thanlinardos.spring_enterprise_library.annotations;
 
-import com.thanlinardos.spring_enterprise_library.config.TimeConfig;
+import com.thanlinardos.spring_enterprise_library.time.config.TimeConfig;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;

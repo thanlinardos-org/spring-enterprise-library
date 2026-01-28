@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  ssl:
+    bundle:
+      jks:
+        server:
+          keystore:
+            location: example.p12
+scheduling:
+  enabled: false
+thanlinardos:
+  springenterpriselibrary:
+    secrets:
+      refresh:
+        enabled: false
+        displayValues: false
+    oauth2:
+      client-certificate-path-format: "classpath:certificate_scripts/cert/{0}/{0}.p12"

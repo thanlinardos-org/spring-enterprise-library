@@ -1,12 +1,18 @@
 package com.thanlinardos.spring_enterprise_library.spring_cloud_security.utils;
 
+import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for handling models extending BasicIdModel.
@@ -55,5 +61,37 @@ public class ModelUtils {
         return Optional.ofNullable(model)
                 .map(t -> getIdFromModel(nestedModelSupplier.apply(t)))
                 .orElse(getIdFromNestedModel(model, orNestedModelSupplier));
+    }
+
+    @Nullable
+    public static <M extends BasicIdModel> M getModelFromIdOrNull(@Nullable Long entityId, Supplier<M> constructor) {
+        return Optional.ofNullable(entityId)
+                .map(id -> getModelFromId(id, constructor))
+                .orElse(null);
+    }
+
+    public static <M extends BasicIdModel> M getModelFromId(Long id, Supplier<M> constructor) {
+        M instance = constructor.get();
+        instance.setId(id);
+        return instance;
+    }
+
+    @Nullable
+    public static <M extends BasicIdModel, E extends BasicIdJpa> M getModelFromEntity(@Nullable E entity, Function<E, M> modelMapper) {
+        return Optional.ofNullable(entity)
+                .map(modelMapper)
+                .orElse(null);
+    }
+
+    public static <M extends BasicIdModel, E extends BasicIdJpa> Set<M> getModelsSetFromEntities(@Nonnull Collection<E> entities, Function<E, M> modelMapper) {
+        return entities.stream()
+                .map(modelMapper)
+                .collect(Collectors.toSet());
+    }
+
+    public static <M extends BasicIdModel, E extends BasicIdJpa> Collection<M> getModelsFromEntities(@Nonnull Collection<E> entities, Function<E, M> modelMapper) {
+        return entities.stream()
+                .map(modelMapper)
+                .toList();
     }
 }

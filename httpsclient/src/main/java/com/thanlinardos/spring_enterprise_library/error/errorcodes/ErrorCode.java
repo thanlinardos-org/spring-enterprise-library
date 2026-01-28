@@ -3,6 +3,7 @@ package com.thanlinardos.spring_enterprise_library.error.errorcodes;
 import com.thanlinardos.spring_enterprise_library.error.exceptions.CoreException;
 import lombok.Getter;
 
+import javax.net.ssl.SSLContext;
 import java.util.logging.Level;
 
 /**
@@ -39,7 +40,12 @@ public enum ErrorCode {
     /**
      * Error code indicating an unexpected error occurred.
      */
-    UNEXPECTED_ERROR("UNEXPECTED_ERROR", 10006, Level.SEVERE);
+    UNEXPECTED_ERROR("UNEXPECTED_ERROR", 10006, Level.SEVERE),
+    /** Error code indicating an error with creating an {@link SSLContext}. */
+    CREATE_SSL_CONTEXT_ERROR("CREATE_SSL_CONTEXT_ERROR", 10007, Level.SEVERE),
+    CONFIG_PROPERTY_NOT_FOUND("CONFIG_PROPERTY_NOT_FOUND", 10008, Level.SEVERE),
+    INVALID_EVENT_CLASS_INSTANCE("INVALID_EVENT_CLASS_INSTANCE", 10009, Level.SEVERE);
+
 
     private final String name;
     private final int code;
