@@ -238,7 +238,7 @@ public interface TimeTemporal {
 
     /**
      * Checks if the interval of this temporal entity ends after the specified dateTime.
-     dateTime
+     *
      * @param dateTime the date to check.
      * @return true if the interval ends after the dateTime, false otherwise.
      */

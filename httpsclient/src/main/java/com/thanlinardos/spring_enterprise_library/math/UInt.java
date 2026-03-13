@@ -11,16 +11,16 @@ import lombok.EqualsAndHashCode;
 public class UInt extends Number {
 
     /**
-     * The minimum and maximum values for an unsigned integer
+     * The minimum and maximum values for an unsigned integer.
      */
     public static final long MIN_VALUE = 0L;
     /**
-     * The maximum value for an unsigned integer (2^32 - 1)
+     * The maximum value for an unsigned integer (2^32 - 1).
      */
     public static final long MAX_VALUE = 4294967295L;
 
     /**
-     * The value of the unsigned integer
+     * The value of the unsigned integer.
      */
     private final long value;
 

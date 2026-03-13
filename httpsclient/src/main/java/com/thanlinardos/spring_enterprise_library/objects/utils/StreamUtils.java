@@ -77,7 +77,7 @@ public class StreamUtils {
     }
 
     /**
-     * Removes duplicates in a stream based on a given {@link Comparator}
+     * Removes duplicates in a stream based on a given {@link Comparator}.
      *
      * @param comparator the comparator used to determine whether something is a duplicate
      * @param <T>        the element type.
@@ -228,7 +228,7 @@ public class StreamUtils {
     }
 
     /**
-     * Collects the result of the stream and applies {@link CollectionUtils#isEmpty(Collection)} to it
+     * Collects the result of the stream and applies {@link CollectionUtils#isEmpty(Collection)} to it.
      *
      * @param <T> the element type.
      * @return Collector with true if the stream contains no elements otherwise false
@@ -293,7 +293,7 @@ public class StreamUtils {
     }
 
     /**
-     * Gets the stream of collection from a non-null object
+     * Gets the stream of collection from a non-null object.
      *
      * @param object    the object to extract the collection from.
      * @param extractor the function to extract the collection from the object

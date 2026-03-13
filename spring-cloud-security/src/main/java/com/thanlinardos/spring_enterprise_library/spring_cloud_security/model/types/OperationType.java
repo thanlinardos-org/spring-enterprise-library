@@ -8,15 +8,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum OperationType {
 
-    /** Create operation */
     CREATE("CREATE"),
-    /** Add operation */
     ADD("ADD"),
-    /** View operation */
     VIEW("VIEW"),
-    /** Update operation */
     UPDATE("UPDATE"),
-    /** Delete operation */
     DELETE("DELETE");
 
     private final String value;

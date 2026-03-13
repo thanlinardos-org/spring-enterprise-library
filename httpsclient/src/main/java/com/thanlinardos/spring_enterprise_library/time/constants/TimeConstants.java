@@ -15,16 +15,17 @@ public class TimeConstants {
 
     /**
      * Comparators that handle null values by treating them as minimum or maximum values.
-    /* null as minimum date */
+     * null as minimum date
+     */
     public static final Comparator<LocalDate> NULL_AS_MIN_COMPARATOR = Comparator.nullsFirst(LocalDate::compareTo);
-    /** null as maximum date */
+    /** null as maximum date. */
     public static final Comparator<LocalDate> NULL_AS_MAX_COMPARATOR = Comparator.nullsLast(LocalDate::compareTo);
-    /** null as minimum date-time */
+    /** null as minimum date-time. */
     public static final Comparator<LocalDateTime> NULL_AS_MIN_DATE_TIME_COMPARATOR = Comparator.nullsFirst(LocalDateTime::compareTo);
-    /** null as maximum date-time */
+    /** null as maximum date-time. */
     public static final Comparator<LocalDateTime> NULL_AS_MAX_DATE_TIME_COMPARATOR = Comparator.nullsLast(LocalDateTime::compareTo);
-    /** null as minimum instant */
+    /** null as minimum instant. */
     public static final Comparator<Instant> NULL_AS_MIN_INSTANT_COMPARATOR = Comparator.nullsFirst(Instant::compareTo);
-    /** null as maximum instant */
+    /** null as maximum instant. */
     public static final Comparator<Instant> NULL_AS_MAX_INSTANT_COMPARATOR = Comparator.nullsLast(Instant::compareTo);
 }

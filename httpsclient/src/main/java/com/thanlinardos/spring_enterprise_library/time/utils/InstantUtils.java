@@ -6,12 +6,15 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static com.thanlinardos.spring_enterprise_library.time.constants.TimeConstants.*;
+import static com.thanlinardos.spring_enterprise_library.time.constants.TimeConstants.NULL_AS_MAX_INSTANT_COMPARATOR;
+import static com.thanlinardos.spring_enterprise_library.time.constants.TimeConstants.NULL_AS_MIN_INSTANT_COMPARATOR;
 
 /**
  * Utility class for working with {@link Instant} objects.

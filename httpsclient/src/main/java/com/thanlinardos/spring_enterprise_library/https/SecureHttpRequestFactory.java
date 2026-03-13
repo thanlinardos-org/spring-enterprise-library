@@ -45,8 +45,8 @@ public class SecureHttpRequestFactory extends SimpleClientHttpRequestFactory {
     public SecureHttpRequestFactory(KeyAndTrustStoreProperties keyStore, KeyAndTrustStoreProperties trustStore) {
         try {
             this.sslContext = SslContextUtil.buildSSLContext(keyStore, trustStore);
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException |
-                 KeyManagementException | UnrecoverableKeyException e) {
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException
+                 | KeyManagementException | UnrecoverableKeyException e) {
             throw new CoreException(ErrorCode.CREATE_SSL_CONTEXT_ERROR, "Error creating SSL context with keystore path: {0} and trust-store path: {1}", e, keyStore.path(), trustStore.path());
         }
     }

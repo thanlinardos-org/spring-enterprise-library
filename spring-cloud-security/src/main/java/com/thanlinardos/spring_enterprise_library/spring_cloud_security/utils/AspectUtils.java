@@ -10,7 +10,12 @@ import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Utility methods for working with AspectJ join points and annotations.
@@ -39,8 +44,8 @@ public class AspectUtils {
     public static <A extends Annotation> boolean hasAnnotation(ProceedingJoinPoint proceedingJoinPoint, Class<A> annotation) {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         Method method = methodSignature.getMethod();
-        return AnnotationUtils.findAnnotation(method, annotation) != null ||
-                AnnotationUtils.findAnnotation(method.getDeclaringClass(), annotation) != null;
+        return AnnotationUtils.findAnnotation(method, annotation) != null
+                || AnnotationUtils.findAnnotation(method.getDeclaringClass(), annotation) != null;
     }
 
     /**

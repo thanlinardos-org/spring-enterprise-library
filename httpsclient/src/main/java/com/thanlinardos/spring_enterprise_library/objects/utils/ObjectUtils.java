@@ -218,7 +218,7 @@ public class ObjectUtils {
     }
 
     /**
-     * Returns a set of ids of the entities
+     * Returns a set of ids of the entities.
      *
      * @param entities the entities
      * @param <T> the type class of the given entities.

@@ -3,7 +3,10 @@ package com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.b
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Interface representing a resource that requires a certain privilege level for access.

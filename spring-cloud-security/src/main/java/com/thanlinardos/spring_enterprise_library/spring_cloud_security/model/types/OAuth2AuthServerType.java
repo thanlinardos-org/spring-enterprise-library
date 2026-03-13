@@ -8,13 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum OAuth2AuthServerType {
 
-    /**
-     * Keycloak server
-     */
     KEYCLOAK("KEYCLOAK"),
-    /**
-     * Spring OAuth2 server
-     */
     SPRING_OAUTH2_SERVER("SPRING_OAUTH2_SERVER");
 
     private final String value;

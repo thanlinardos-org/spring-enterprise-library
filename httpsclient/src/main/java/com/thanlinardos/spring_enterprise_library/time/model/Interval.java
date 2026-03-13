@@ -12,14 +12,20 @@ import jakarta.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.*;
 import static com.thanlinardos.spring_enterprise_library.objects.utils.ObjectUtils.isAllObjectsNotNullAndEquals;
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.addDay;
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.parseLocalDate;
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.subtractDay;
 
 /**
  * Represents a time interval with a start and end date.

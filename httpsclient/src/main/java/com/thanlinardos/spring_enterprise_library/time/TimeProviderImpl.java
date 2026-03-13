@@ -4,7 +4,11 @@ import com.thanlinardos.spring_enterprise_library.time.api.TimeProvider;
 import com.thanlinardos.spring_enterprise_library.time.model.InstantInterval;
 import com.thanlinardos.spring_enterprise_library.time.model.TimeInterval;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.concurrent.TimeUnit;
@@ -64,7 +68,7 @@ public record TimeProviderImpl(ZoneId zoneId, TimeUnit accuracy, LocalDate maxDa
 
     @Override
     public LocalDateTime getEndOfDay(LocalDate date) {
-        var start = getStartOfDay(date);
+        LocalDateTime start = getStartOfDay(date);
         return start.isAfter(LocalDateTime.MIN) ? start.minusSeconds(1).plusDays(1) : start.plusDays(1).minusSeconds(1);
     }
 
@@ -75,7 +79,7 @@ public record TimeProviderImpl(ZoneId zoneId, TimeUnit accuracy, LocalDate maxDa
 
     @Override
     public LocalDate getFirstDayOfQuarter(LocalDate dateInQuarter) {
-        var result = getCurrentDate();
+        LocalDate result = getCurrentDate();
         return result
                 .withYear(dateInQuarter.getYear())
                 .with(dateInQuarter.getMonth().firstMonthOfQuarter())
@@ -84,7 +88,7 @@ public record TimeProviderImpl(ZoneId zoneId, TimeUnit accuracy, LocalDate maxDa
 
     @Override
     public LocalDate getLastDayOfQuarter(LocalDate dateInQuarter) {
-        var result = getFirstDayOfQuarter(dateInQuarter);
+        LocalDate result = getFirstDayOfQuarter(dateInQuarter);
         return result.plusMonths(2)
                 .with(TemporalAdjusters.lastDayOfMonth());
     }
@@ -101,13 +105,13 @@ public record TimeProviderImpl(ZoneId zoneId, TimeUnit accuracy, LocalDate maxDa
 
     @Override
     public InstantInterval instantFromNowPlusSeconds(long seconds) {
-        var now = getCurrentInstant();
+        Instant now = getCurrentInstant();
         return new InstantInterval(now, now.plusSeconds(seconds));
     }
 
     @Override
     public TimeInterval timeFromNowPlusSeconds(long seconds) {
-        var now = getCurrentDateTime();
+        LocalDateTime now = getCurrentDateTime();
         return new TimeInterval(now, now.plusSeconds(seconds));
     }
 }

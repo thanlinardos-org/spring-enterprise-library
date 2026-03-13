@@ -9,9 +9,17 @@ import com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -19,8 +27,12 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.parseLocalDate;
-import static com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils.*;
 import static com.thanlinardos.spring_enterprise_library.objects.utils.ObjectUtils.isAllObjectsNotNullAndEquals;
+import static com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils.addSingle;
+import static com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils.parseInstant;
+import static com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils.subtractSingle;
+import static com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils.toEndOfLocalDate;
+import static com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils.toStartOfDate;
 
 /**
  * Represents a time InstantInterval with a start and end date.
@@ -62,7 +74,6 @@ public record InstantInterval(@Nullable Instant start, @Nullable Instant end) im
     public InstantInterval(LocalDate startDate, LocalDate endDate) {
         this(toStartOfDate(startDate), toEndOfLocalDate(endDate));
     }
-
 
     /**
      * Constructs an {@link InstantInterval} for the given start and end {@link LocalDate}s.

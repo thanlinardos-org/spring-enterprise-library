@@ -8,13 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum OAuth2TokenType {
 
-    /**
-     * JSON Web Token
-     */
     JWT("JWT"),
-    /**
-     * Opaque token
-     */
     OPAQUE("OPAQUE");
 
     private final String value;

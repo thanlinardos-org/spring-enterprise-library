@@ -9,17 +9,28 @@ import com.thanlinardos.spring_enterprise_library.time.utils.DateTimeUtils;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateTimeUtils.addSingle;
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateTimeUtils.parseDateTime;
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateTimeUtils.subtractSingle;
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateTimeUtils.toEndOfDate;
+import static com.thanlinardos.spring_enterprise_library.time.utils.DateTimeUtils.toStartOfDate;
 import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.parseLocalDate;
-import static com.thanlinardos.spring_enterprise_library.time.utils.DateTimeUtils.*;
 import static com.thanlinardos.spring_enterprise_library.objects.utils.ObjectUtils.isAllObjectsNotNullAndEquals;
 
 /**
@@ -412,7 +423,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns true if any of the given intervals overlap with each other, otherwise false
+     * Returns true if any of the given intervals overlap with each other, otherwise false.
      *
      * @param intervals a list of intervals
      * @return true if any of the given intervals overlap with each other
@@ -423,7 +434,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns the list of the given intervals, excluding any elements equal to this interval
+     * Returns the list of the given intervals, excluding any elements equal to this interval.
      *
      * @param intervals a list of intervals
      * @return the result of removing any intervals equal to this interval
@@ -445,7 +456,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns the overlap between this interval and the given interval, otherwise an empty Optional if there is no overlap
+     * Returns the overlap between this interval and the given interval, otherwise an empty Optional if there is no overlap.
      * <pre>
      * This interval:
      * |--------------------------------------|
@@ -456,7 +467,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
      * </pre>
      *
      * @param interval a given {@link TimeInterval}
-     * @return the overlap between this interval and the given interval, otherwise an empty Optional if there is no overlap
+     * @return the overlap between this interval and the given interval, otherwise an empty Optional if there is no overlap.
      */
     public Optional<TimeInterval> getOverlap(@Nonnull TimeInterval interval) {
         if (overlaps(interval)) {
@@ -480,7 +491,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns a new version of this interval, where the start date is bounded according to the given {@code lowerBound}
+     * Returns a new version of this interval, where the start date is bounded according to the given {@code lowerBound}.
      * Equivalent to calling {@link TimeInterval#getOverlap(TimeInterval)} with an interval starting from {@code lowerBound} and ending in null.
      *
      * @param lowerBound a date defining the lower bound to apply to this interval
@@ -503,7 +514,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns a normalized (see {@link TimeInterval#normalize(Collection)}) list of overlaps between the given intervals and this interval
+     * Returns a normalized (see {@link TimeInterval#normalize(Collection)}) list of overlaps between the given intervals and this interval.
      * <pre>
      * This interval:
      * |--------------------------------|
@@ -522,7 +533,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Vararg variant of {@link TimeInterval#getOverlaps(Collection)}
+     * Vararg variant of {@link TimeInterval#getOverlaps(Collection)}.
      *
      * @param intervals intervals to determine overlaps for
      * @return a normalized list of overlaps between the given intervals and this interval
@@ -532,7 +543,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns a normalized (see {@link TimeInterval#normalize(Collection)}) list of overlaps between the given intervals and this interval
+     * Returns a normalized (see {@link TimeInterval#normalize(Collection)}) list of overlaps between the given intervals and this interval.
      * Whether to merge adjacent overlaps is subject to the value of {@code mergeAdjacentIntervals}
      * <pre>
      * This interval:
@@ -559,7 +570,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns a normalized list of the portions of {@code intervals} that do not overlap with this interval
+     * Returns a normalized list of the portions of {@code intervals} that do not overlap with this interval.
      * <pre>
      * This interval:
      *                |---------------|
@@ -583,7 +594,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Vararg variant of {@link TimeInterval#getNotOverlaps(Collection)}
+     * Vararg variant of {@link TimeInterval#getNotOverlaps(Collection)}.
      *
      * @param intervals given intervals
      * @return the portions of {@code intervals} that do not overlap with this interval
@@ -673,7 +684,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns the remainder of this interval, after subtracting the overlap with the given interval
+     * Returns the remainder of this interval, after subtracting the overlap with the given interval.
      * <pre>
      * This:
      * |---------------------------|
@@ -691,7 +702,7 @@ public record TimeInterval(@Nullable LocalDateTime start,
     }
 
     /**
-     * Returns the remainder of this interval, after subtracting the overlap with the given intervals
+     * Returns the remainder of this interval, after subtracting the overlap with the given intervals.
      * <pre>
      * This:
      * |---------------------------|

@@ -3,7 +3,11 @@ package com.thanlinardos.spring_enterprise_library.time.api;
 import com.thanlinardos.spring_enterprise_library.time.model.InstantInterval;
 import com.thanlinardos.spring_enterprise_library.time.model.TimeInterval;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
@@ -15,42 +19,42 @@ import java.util.concurrent.TimeUnit;
 public interface TimeProvider {
 
     /**
-     * Gets the accuracy of the TimeProvider as TimeUnit
+     * Gets the accuracy of the TimeProvider as TimeUnit.
      *
      * @return the accuracy as TimeUnit
      */
     TimeUnit accuracy();
 
     /**
-     * Gets the default ZoneOffset of the TimeProvider
+     * Gets the default ZoneOffset of the TimeProvider.
      *
      * @return the default ZoneOffset
      */
     ZoneOffset getDefaultZone();
 
     /**
-     * Gets the accuracy of the TimeProvider as ChronoUnit
+     * Gets the accuracy of the TimeProvider as ChronoUnit.
      *
      * @return the accuracy as ChronoUnit
      */
     ChronoUnit getChronoAccuracy();
 
     /**
-     * Obtains the current date-time from the system clock in the specified time-zone
+     * Obtains the current date-time from the system clock in the specified time-zone.
      *
      * @return the current date-time of specific time zone
      */
     LocalDateTime getCurrentDateTime();
 
     /**
-     * Obtains the current instant from the system clock in the default time-zone
+     * Obtains the current instant from the system clock in the default time-zone.
      *
      * @return the current instant of specific time zone
      */
     Instant getCurrentInstant();
 
     /**
-     * Obtains the current date from the system clock in the specified time-zone
+     * Obtains the current date from the system clock in the specified time-zone.
      *
      * @return the current date of specific time zone
      */
@@ -64,7 +68,7 @@ public interface TimeProvider {
     long getCurrentTimeMillis();
 
     /**
-     * Obtains an instance of LocalDateTime from provided milliseconds in the specified time-zone
+     * Obtains an instance of LocalDateTime from provided milliseconds in the specified time-zone.
      *
      * @param milliseconds the milliseconds to convert
      * @return LocalDateTime object from milliseconds
@@ -72,7 +76,7 @@ public interface TimeProvider {
     LocalDateTime fromMillis(long milliseconds);
 
     /**
-     * Converts this LocalDateTime to the number of milliseconds from the epoch of 1970-01-01T00:00:00Z in the specified time-zone
+     * Converts this LocalDateTime to the number of milliseconds from the epoch of 1970-01-01T00:00:00Z in the specified time-zone.
      *
      * @param ldt the LocalDateTime to convert
      * @return number of milliseconds from LocalDateTime object from epoch
@@ -80,7 +84,7 @@ public interface TimeProvider {
     long toMillis(LocalDateTime ldt);
 
     /**
-     * Returns LocalDateTime with the time of the end of the day based on given LocalDate
+     * Returns LocalDateTime with the time of the end of the day based on given LocalDate.
      * NOTE: Returned time will be 23:59 (where LocalTime.MAX is 23:59:59.999999999)
      *
      * @param date the given date
@@ -89,7 +93,7 @@ public interface TimeProvider {
     LocalDateTime getEndOfDay(LocalDate date);
 
     /**
-     * Returns the LocalDateTime with the start time of the day based on the given LocalDate
+     * Returns the LocalDateTime with the start time of the day based on the given LocalDate.
      *
      * @param date the given date
      * @return number of milliseconds from LocalDateTime object from epoch
@@ -119,7 +123,6 @@ public interface TimeProvider {
      */
     LocalDate getLastDayOfQuarter(LocalDate dateInQuarter);
 
-
     /**
      * Return new instance of LocalDate with first day of the year.
      *
@@ -137,7 +140,7 @@ public interface TimeProvider {
     LocalDate getLastDayOfYear(LocalDate date);
 
     /**
-     * Gets the time zone of the TimeProvider
+     * Gets the time zone of the TimeProvider.
      *
      * @return the time zone
      */

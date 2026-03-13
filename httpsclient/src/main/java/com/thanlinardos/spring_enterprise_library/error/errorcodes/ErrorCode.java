@@ -47,7 +47,6 @@ public enum ErrorCode {
     INVALID_EVENT_CLASS_INSTANCE("INVALID_EVENT_CLASS_INSTANCE", 10009, Level.SEVERE),
     VALIDATION_ERROR("VALIDATION_ERROR", 10010, Level.SEVERE);
 
-
     private final String name;
     private final int code;
     private final Level level;
