@@ -249,12 +249,12 @@ public class ObjectUtils {
      * @param <T> type of the entity
      * @return a string describing the entity
      */
-    public static <T> String getDebugString(@Nullable T entity) {
+        public static <T> String getDebugString(@Nullable T entity) {
         if (entity == null) {
             return "{entity is null}";
         } else if (entity instanceof Collection) {
             return getDebugString((Collection<?>) entity);
-        } else if (getSimpleName(entity).contains("$$Lambda$")) {
+        } else if (getSimpleName(entity).contains("$$Lambda")) {
             Method method = entity.getClass().getDeclaredMethods()[0];
             String parameterTypes = collectStringWithCommaSeparation(List.of(method.getParameterTypes()), Class::getName);
             return String.format("{lambda=%s, parameterTypes=[%s], returnType=%s}", getSimpleName(entity), parameterTypes, method.getReturnType());

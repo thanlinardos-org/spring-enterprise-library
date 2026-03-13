@@ -1,18 +1,27 @@
 package com.thanlinardos.spring_enterprise_library.https.utils;
 
+import com.thanlinardos.spring_enterprise_library.https.api.TrustStrategy;
 import com.thanlinardos.spring_enterprise_library.https.properties.KeyAndTrustStoreProperties;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.http.ssl.SSLContextBuilder;
 
+import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.security.*;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 /**
  * Utility class for building SSL contexts and REST clients with custom keystore and truststore configurations.
@@ -24,6 +33,7 @@ public class SslContextUtil {
      * The default type of the keystore and truststore.
      */
     private static final String KEY_STORE_TYPE = "PKCS12";
+    private static final String TLS = "TLS";
 
     /**
      * Builds a RESTEasy client with the specified keystore and truststore properties.
@@ -70,12 +80,58 @@ public class SslContextUtil {
             keystorePassword = initializeKeystore(keystore, keystoreObject);
         }
 
-        return SSLContextBuilder
-                .create()
-                .loadTrustMaterial(truststoreObject, (chain, authType) -> true)
-                .loadKeyMaterial(keystoreObject, keystorePassword)
-                .setKeyStoreType(KEY_STORE_TYPE)
-                .build();
+        KeyManager[] keyManagers = loadKeyMaterial(keystoreObject, keystorePassword);
+        TrustManager[] trustManagers = loadTrustMaterial(truststoreObject, (chain, authType) -> true);
+
+        SSLContext sslContext = SSLContext.getInstance(TLS);
+        sslContext.init(keyManagers, trustManagers, null);
+        return sslContext;
+    }
+
+    private static TrustManager[] loadTrustMaterial(KeyStore truststore, TrustStrategy trustStrategy) throws NoSuchAlgorithmException, KeyStoreException {
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(truststore);
+
+        return Arrays.stream(trustManagerFactory.getTrustManagers())
+                .filter(X509TrustManager.class::isInstance)
+                .map(X509TrustManager.class::cast)
+                .map(tm -> new TrustManagerDelegate(tm, trustStrategy)).distinct()
+                .toArray(TrustManager[]::new);
+    }
+
+    private static KeyManager[] loadKeyMaterial(KeyStore keystore, char[] keyPassword) throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
+        KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmfactory.init(keystore, keyPassword);
+        return kmfactory.getKeyManagers();
+    }
+
+    static class TrustManagerDelegate implements X509TrustManager {
+
+        private final X509TrustManager trustManager;
+        private final TrustStrategy trustStrategy;
+
+        TrustManagerDelegate(X509TrustManager trustManager, TrustStrategy trustStrategy) {
+            this.trustManager = trustManager;
+            this.trustStrategy = trustStrategy;
+        }
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            this.trustManager.checkClientTrusted(chain, authType);
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            if (!this.trustStrategy.isTrusted(chain, authType)) {
+                this.trustManager.checkServerTrusted(chain, authType);
+            }
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return this.trustManager.getAcceptedIssuers();
+        }
+
     }
 
     private static char[] initializeKeystore(KeyAndTrustStoreProperties keystore, KeyStore keyStoreObject) throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException {

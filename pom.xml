@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.thanlinardos</groupId>
     <artifactId>spring-enterprise-library</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>spring-enterprise-library</name>
     <description>An enterprise library for spring boot web applications.</description>
     <url>https://github.com/thanlinardos/spring-enterprise-library</url>

@@ -2,23 +2,15 @@ package com.thanlinardos.spring_enterprise_library.objects.utils;
 
 import com.thanlinardos.spring_enterprise_library.error.errorcodes.ErrorCode;
 import com.thanlinardos.spring_enterprise_library.error.exceptions.CoreException;
+import com.thanlinardos.spring_enterprise_library.objects.iterators.FilterIterator;
+import com.thanlinardos.spring_enterprise_library.objects.iterators.IteratorChain;
+import com.thanlinardos.spring_enterprise_library.objects.iterators.UnmodifiableIterator;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.SetUtils;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
@@ -85,7 +77,7 @@ public class CollectionUtils {
      * @param <T>        collection element type
      * @return true if an element matching the predicate is found, otherwise false.
      */
-    public static <T> boolean contains(Collection<T> collection, Predicate<T> predicate) {
+    public static <T> boolean contains(@Nullable Collection<T> collection, Predicate<T> predicate) {
         return StreamUtils.ofNullable(collection)
                 .anyMatch(predicate);
     }
@@ -239,7 +231,10 @@ public class CollectionUtils {
      * @return return a list of all the elements from the lists.
      */
     public static <T> List<T> combineToList(List<T> first, List<T> second) {
-        return ListUtils.union(first, second);
+        ArrayList<T> result = new ArrayList<>(first.size() + second.size());
+        result.addAll(first);
+        result.addAll(second);
+        return result;
     }
 
     /**
@@ -269,7 +264,43 @@ public class CollectionUtils {
      * @return return a set of all the elements from the sets.
      */
     public static <T> Set<T> combineToSet(Set<T> first, Set<T> second) {
-        return SetUtils.union(first, second);
+        SetView<T> bMinusA = difference(second, first);
+
+        return new SetView<>() {
+            @Override
+            public boolean contains(final Object o) {
+                return first.contains(o) || second.contains(o);
+            }
+
+            @Override
+            public Iterator<T> createIterator() {
+                return new IteratorChain<>(first.iterator(), bMinusA.iterator());
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return first.isEmpty() && second.isEmpty();
+            }
+
+            @Override
+            public int size() {
+                return first.size() + bMinusA.size();
+            }
+        };
+    }
+
+    public static <E> SetView<E> difference(final Set<? extends E> firstSet, final Set<? extends E> secondSet) {
+        return new SetView<>() {
+            @Override
+            public boolean contains(final Object o) {
+                return firstSet.contains(o) && !secondSet.contains(o);
+            }
+
+            @Override
+            public Iterator<E> createIterator() {
+                return new FilterIterator<>(firstSet.iterator(), object -> !secondSet.contains(object));
+            }
+        };
     }
 
     /**
@@ -473,6 +504,52 @@ public class CollectionUtils {
     }
 
     /**
+     * Returns an unmodifiable <b>view</b> of the symmetric difference of the given
+     * {@link Set}s.
+     * <p>
+     * The returned view contains all elements of {@code a} and {@code b} that are
+     * not a member of the other set.
+     * <p>
+     * This is equivalent to {@code union(difference(a, b), difference(b, a))}.
+     *
+     * @param <E> the generic type that is able to represent the types contained
+     *            in both input sets.
+     * @param a   the first set, must not be null
+     * @param b   the second set, must not be null
+     * @return a view of the symmetric difference of the two sets
+     */
+    public static <E> SetView<E> disjunction(final Set<? extends E> a, final Set<? extends E> b) {
+        if (a == null || b == null) {
+            throw new NullPointerException("Sets must not be null.");
+        }
+
+        final SetView<E> aMinusB = difference(a, b);
+        final SetView<E> bMinusA = difference(b, a);
+
+        return new SetView<>() {
+            @Override
+            public boolean contains(final Object o) {
+                return a.contains(o) ^ b.contains(o);
+            }
+
+            @Override
+            public Iterator<E> createIterator() {
+                return new IteratorChain<>(aMinusB.iterator(), bMinusA.iterator());
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return aMinusB.isEmpty() && bMinusA.isEmpty();
+            }
+
+            @Override
+            public int size() {
+                return aMinusB.size() + bMinusA.size();
+            }
+        };
+    }
+
+    /**
      * Determines if there is any difference between the two sets.
      * Both by comparing difference in set A to B and set B to A
      *
@@ -488,7 +565,7 @@ public class CollectionUtils {
         } else if (isEmpty(a) || isEmpty(b)) {
             return true;
         }
-        return isNotEmpty(SetUtils.disjunction(a, b));
+        return isNotEmpty(disjunction(a, b));
     }
 
     /**
@@ -507,9 +584,9 @@ public class CollectionUtils {
             final ArrayList<T> list = new ArrayList<>();
             list.add(null);
             return list;
+        } else {
+            return Arrays.asList(elements);
         }
-
-        return Arrays.asList(elements);
     }
 
     /**
@@ -667,5 +744,31 @@ public class CollectionUtils {
      */
     public static boolean isNotEmpty(@Nullable Object[] array) {
         return array != null && array.length > 0;
+    }
+
+    public abstract static class SetView<E> extends AbstractSet<E> {
+
+        /**
+         * Return an iterator for this view; the returned iterator is
+         * not required to be unmodifiable.
+         *
+         * @return a new iterator for this view
+         */
+        protected abstract Iterator<E> createIterator();
+
+        @Nonnull
+        @Override
+        public Iterator<E> iterator() {
+            return UnmodifiableIterator.unmodifiableIterator(createIterator());
+        }
+
+        @Override
+        public int size() {
+            int size = 0;
+            for (E ignored : this) {
+                size++;
+            }
+            return size;
+        }
     }
 }
