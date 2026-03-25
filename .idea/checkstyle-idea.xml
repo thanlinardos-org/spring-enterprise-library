@@ -24,7 +24,7 @@
           $PROJECT_DIR$/.idea/enforcedCheckstyles/checkstyle_code.xml
           <option name="properties">
             <map>
-              <entry key="samedir" value="code" />
+              <entry key="samedir" value="" />
             </map>
           </option>
         </ConfigurationLocation>
@@ -32,7 +32,7 @@
           $PROJECT_DIR$/.idea/enforcedCheckstyles/checkstyle_javadoc.xml
           <option name="properties">
             <map>
-              <entry key="samedir" value="Javadoc" />
+              <entry key="samedir" value="" />
             </map>
           </option>
         </ConfigurationLocation>

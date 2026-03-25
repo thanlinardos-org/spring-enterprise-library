@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.thanlinardos.spring_enterprise_library.objects.utils.ObjectUtils.applyIfBothNotNull;
 import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.parseLocalDate;
 import static com.thanlinardos.spring_enterprise_library.objects.utils.ObjectUtils.isAllObjectsNotNullAndEquals;
 import static com.thanlinardos.spring_enterprise_library.time.utils.InstantUtils.addSingle;
@@ -132,7 +133,7 @@ public record InstantInterval(@Nullable Instant start, @Nullable Instant end) im
      * @return true if the start Instant is after the end Instant, false otherwise.
      */
     public static boolean isNotValid(@Nullable Instant start, @Nullable Instant end) {
-        return start != null && end != null && start.isAfter(end);
+        return applyIfBothNotNull(start, end, Instant::isAfter).orElse(false);
     }
 
     /**

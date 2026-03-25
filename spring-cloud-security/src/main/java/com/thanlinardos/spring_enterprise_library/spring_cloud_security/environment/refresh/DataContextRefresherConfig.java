@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.cloud.context.refresh.ConfigDataContextRefresher;
-import org.springframework.cloud.util.ConditionalOnBootstrapDisabled;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,6 @@ public class DataContextRefresherConfig {
     @Bean
     @Primary
     @ConditionalOnMissingBean
-    @ConditionalOnBootstrapDisabled
     public ConfigDataContextRefresher configDataContextRefresher(ConfigurableApplicationContext context,
                                                                  org.springframework.cloud.context.scope.refresh.RefreshScope scope,
                                                                  RefreshAutoConfiguration.RefreshProperties properties,
