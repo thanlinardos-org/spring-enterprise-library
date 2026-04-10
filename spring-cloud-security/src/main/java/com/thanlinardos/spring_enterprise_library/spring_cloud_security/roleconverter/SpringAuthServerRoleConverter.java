@@ -33,12 +33,11 @@ public class SpringAuthServerRoleConverter implements Converter<Jwt, Collection<
      */
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
-        // jwt.getClaims().get("scope")
         if (jwt.getClaims().get("roles") instanceof ArrayList<?> scopes && !scopes.isEmpty() && scopes.getFirst() instanceof String) {
             return scopes.stream()
                     .map(role -> ROLE_PREFIX + role)
                     .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
         } else {
             return new ArrayList<>();
         }

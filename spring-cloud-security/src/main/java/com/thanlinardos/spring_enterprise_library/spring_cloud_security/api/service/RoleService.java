@@ -31,6 +31,15 @@ public interface RoleService<T extends Role> {
     Collection<T> findRoles(Collection<String> names);
 
     /**
+     * Finds roles by their names, by filtering non-existent roles without throwing an exception.
+     * Used for cases like Keycloak realm roles, where some of the granted authorities may not exist as roles in the system.
+     *
+     * @param names the names of the roles to find, with the ROLE_ prefix.
+     * @return a collection of roles that match the given names.
+     */
+    Collection<T> findRolesWithoutValidation(Collection<String> names);
+
+    /**
      * Finds granted authorities associated with a specific role.
      *
      * @param role the role for which to find granted authorities.

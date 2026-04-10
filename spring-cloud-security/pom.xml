@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.thanlinardos</groupId>
         <artifactId>spring-enterprise-library</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </parent>
 	<name>spring-cloud-security</name>
 	<description>A library with configuration for spring security with OAuth2 authorization server, that can be either keycloak or custom.</description>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>io.github.thanlinardos</groupId>
             <artifactId>httpsclient</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
 <!--        spring-->
         <dependency>
@@ -112,7 +112,7 @@
         <dependency>
             <groupId>io.github.thanlinardos</groupId>
             <artifactId>httpsclient</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -178,6 +178,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.5.0</version>
                 <configuration>
+                    <doclint>-html,-syntax,-accessibility,-missing</doclint>
                     <failOnError>false</failOnError>
                 </configuration>
 				<executions>

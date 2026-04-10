@@ -1,1 +1,3 @@
 /target
+mavenSonarBuild.sh
+owasp-dependency-check-logs

@@ -30,7 +30,7 @@ public class KeycloakUtils {
      * @return a collection of GrantedAuthority objects representing the roles, or an empty list if none found.
      */
     public static <T extends Role> Collection<GrantedAuthority> getGrantedAuthoritiesFromJwt(Jwt jwt, RoleService<T> roleService) {
-        if (jwt.getClaims().get("realm_access") instanceof Map<?, ?> realmAccess && !realmAccess.isEmpty()) {
+        if (jwt.getClaim("realm_access") instanceof Map<?, ?> realmAccess && !realmAccess.isEmpty()) {
             return getSimpleGrantedAuthoritiesFromRealmAccess(realmAccess, roleService);
         } else {
             return Collections.emptyList();
@@ -55,7 +55,7 @@ public class KeycloakUtils {
 
     private static <T extends Role> Collection<T> parseRoleNamesStream(Map<?, ?> realmAccess, RoleService<T> roleService) {
         return switch (realmAccess.get("roles")) {
-            case List<?> roleList -> roleService.findRoles(roleList.stream()
+            case List<?> roleList -> roleService.findRolesWithoutValidation(roleList.stream()
                     .map(roleName -> ROLE_PREFIX + roleName)
                     .toList());
             case null, default -> Collections.emptyList();

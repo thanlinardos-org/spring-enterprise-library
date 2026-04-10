@@ -4,6 +4,7 @@ import com.thanlinardos.spring_enterprise_library.error.errorcodes.ErrorCode;
 import com.thanlinardos.spring_enterprise_library.error.exceptions.CoreException;
 import com.thanlinardos.spring_enterprise_library.objects.utils.StringUtils;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.environment.certs.ClientCertificateType;
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -35,23 +36,24 @@ public class UpdateCertificatesService {
     @Value("${thanlinardos.springenterpriselibrary.oauth2.client-certificate-path-format}")
     private String clientCertificatePathFormat;
 
-    public void saveClientCertificate(MultipartFile pem) throws IOException {
+    public void saveClientCertificate(MultipartFile pem) throws IOException, CertificateException, NoSuchAlgorithmException {
         String name = ClientCertificateType.valueOf(pem.getName()).name();
-        saveCertificate(pem, name, getClientCertificatePath(name));
+        validateAndSaveCertificate(pem, name, getClientCertificatePath(name));
     }
 
-    public void saveServerCertificate(MultipartFile pem) throws IOException {
+    public void saveServerCertificate(MultipartFile pem) throws IOException, CertificateException, NoSuchAlgorithmException {
         if (serverKeyStorePath == null) {
             throw new CoreException(ErrorCode.CONFIG_PROPERTY_NOT_FOUND, "Server keystore path is not configured");
         }
-        saveCertificate(pem, "server", serverKeyStorePath);
+        validateAndSaveCertificate(pem, "server", serverKeyStorePath);
     }
 
     private String getClientCertificatePath(String name) {
         return StringUtils.formatMessageWithArgs(clientCertificatePathFormat, name);
     }
 
-    private void saveCertificate(MultipartFile pem, String name, String path) throws IOException {
+    private void validateAndSaveCertificate(MultipartFile pem, String name, String path) throws IOException, CertificateException, NoSuchAlgorithmException {
+        validateCertificateAndCheckDuplicate(pem, path);
         log.info("Updating {} certificate from file {}", name, path);
         File certFile = new File(path);
         try (FileOutputStream fos = new FileOutputStream(certFile)) {
@@ -59,43 +61,49 @@ public class UpdateCertificatesService {
         }
     }
 
-    // TODO: test and use
     private void validateCertificateAndCheckDuplicate(MultipartFile pem, String targetPath) throws IOException, NoSuchAlgorithmException, CertificateException {
-        byte[] pemBytes = pem.getBytes();
-        X509Certificate cert;
-        cert = parseCertificate(pemBytes);
+        X509Certificate cert = parseCertificate(pem.getBytes());
         cert.checkValidity();
 
-        String fingerprint;
-        try {
-            fingerprint = computeFingerprintBase64(cert);
-        } catch (NoSuchAlgorithmException | CertificateException e) {
-            throw new IOException(e);
-        }
-
+        String fingerprint = tryComputeFingerprintBase64(cert);
         Path target = Paths.get(targetPath);
-        Path parent = target.getParent();
 
-        // Check the exact target file first (if exists)
+        throwIfDuplicateCertificate(target, fingerprint);
+        Path parent = target.getParent();
+        if (isDirectory(parent)) {
+            throwIfDuplicateCertificateInParentDir(parent, fingerprint);
+        }
+    }
+
+    private void throwIfDuplicateCertificateInParentDir(Path parent, String fingerprint) throws IOException, CertificateException, NoSuchAlgorithmException {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(parent)) {
+            for (Path p : stream) {
+                throwIfDuplicateCertificate(p, fingerprint);
+            }
+        }
+    }
+
+    private boolean isDirectory(@Nullable Path path) {
+        return path != null && Files.isDirectory(path);
+    }
+
+    private void throwIfDuplicateCertificate(Path target, String fingerprint) throws CertificateException, IOException, NoSuchAlgorithmException {
         if (Files.exists(target) && Files.isRegularFile(target)) {
             X509Certificate existing = parseCertificate(Files.readAllBytes(target));
             if (existing != null && fingerprint.equals(computeFingerprintBase64(existing))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate certificate");
             }
         }
+    }
 
-        // If parent directory exists, scan siblings for duplicates
-        if (parent != null && Files.isDirectory(parent)) {
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(parent)) {
-                for (Path p : stream) {
-                    if (!Files.isRegularFile(p)) continue;
-                    X509Certificate existing = parseCertificate(Files.readAllBytes(p));
-                    if (existing != null && fingerprint.equals(computeFingerprintBase64(existing))) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate certificate");
-                    }
-                }
-            }
+    private String tryComputeFingerprintBase64(X509Certificate cert) throws IOException {
+        String fingerprint;
+        try {
+            fingerprint = computeFingerprintBase64(cert);
+        } catch (NoSuchAlgorithmException | CertificateException e) {
+            throw new IOException(e);
         }
+        return fingerprint;
     }
 
     private X509Certificate parseCertificate(byte[] pemBytes) throws CertificateException {
@@ -103,7 +111,6 @@ public class UpdateCertificatesService {
         try (ByteArrayInputStream in = new ByteArrayInputStream(pemBytes)) {
             return (X509Certificate) cf.generateCertificate(in);
         } catch (IOException e) {
-            // ByteArrayInputStream won't actually throw here, wrap as CertificateException
             throw new CertificateException(e);
         }
     }
