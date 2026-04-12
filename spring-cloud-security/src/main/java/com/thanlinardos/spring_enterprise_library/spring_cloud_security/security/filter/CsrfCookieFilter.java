@@ -5,14 +5,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.annotation.Nonnull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Filter that ensures the CSRF token is loaded and rendered to a cookie for each request.
  */
+@Slf4j
 public class CsrfCookieFilter extends OncePerRequestFilter {
 
     /**
@@ -36,9 +39,11 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@Nonnull HttpServletRequest request,
                                     @Nonnull HttpServletResponse response,
                                     @Nonnull FilterChain filterChain) throws ServletException, IOException {
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         // Render the token value to a cookie by causing the deferred token to be loaded
-        csrfToken.getToken();
+        Optional.ofNullable(request.getAttribute(CsrfToken.class.getName()))
+                .map(CsrfToken.class::cast)
+                .ifPresentOrElse(CsrfToken::getToken,
+                        () -> log.debug("No csrf token found for {}", request.getRequestURI()));
         filterChain.doFilter(request, response);
     }
 }

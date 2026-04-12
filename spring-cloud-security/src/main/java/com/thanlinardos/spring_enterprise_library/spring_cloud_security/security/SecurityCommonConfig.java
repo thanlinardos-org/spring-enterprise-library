@@ -29,6 +29,7 @@ import java.util.List;
 
 import static com.thanlinardos.spring_enterprise_library.spring_cloud_security.constants.SecurityCommonConstants.PUBLIC_READ_URLS;
 import static com.thanlinardos.spring_enterprise_library.spring_cloud_security.constants.SecurityCommonConstants.PUBLIC_WRITE_URLS;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
  * Common security configuration class for setting up OAuth2 resource server
@@ -110,7 +111,7 @@ public class SecurityCommonConfig<T extends Role> {
     }
 
     /**
-     * Configures the security filter chain for user login and resource access.
+     * Configures the security filter chain for user login  and resource access.
      *
      * @param http the HttpSecurity object to configure.
      * @return the configured SecurityFilterChain.
@@ -119,19 +120,15 @@ public class SecurityCommonConfig<T extends Role> {
     protected SecurityFilterChain userLoginSecurityFilterChain(HttpSecurity http) throws Exception {
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         http.csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // controls if this cookie is hidden from scripts on the client side
-                .ignoringRequestMatchers("/contact", "/customers"));
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
         http.authorizeHttpRequests(registry -> SecurityAuthorization.configureAuthRegistry(registry, getAuthorities(), getAllPublicReadUrls(), getAllPublicWriteUrls()));
         http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
-        // oauth2
-        http.oauth2Login(o2l -> o2l.loginPage("/login"));
         switch (tokenType) {
             case JWT -> configureJwtToken(http);
             case OPAQUE -> configureOpaqueToken(http);
-            default ->
-                    throw new IllegalArgumentException("Unexpected value for the configured OAuth2 token type: " + tokenType);
+            default -> throw new IllegalArgumentException("Unexpected value for the configured OAuth2 token type: " + tokenType);
         }
-        http.requiresChannel(rc -> rc.anyRequest().requiresSecure());
+        http.redirectToHttps(withDefaults());
         return http.build();
     }
 
