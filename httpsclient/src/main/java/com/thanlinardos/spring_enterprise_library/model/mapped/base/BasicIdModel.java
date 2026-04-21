@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class BasicIdModel implements Serializable, WithId {
+public abstract class BasicIdModel<E extends BasicIdJpa, M extends BasicIdModel<E, M>> implements Serializable, WithId {
 
     private Long id;
 
@@ -29,4 +29,10 @@ public class BasicIdModel implements Serializable, WithId {
     protected BasicIdModel(BasicIdJpa entity) {
         setId(entity.getId());
     }
+
+    public abstract E toEntity();
+
+    public abstract E toEntityOnlyId();
+
+    public abstract M fromEntity(E entity);
 }

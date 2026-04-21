@@ -28,7 +28,7 @@ class ModelUtilsTest {
     @SuperBuilder
     @NoArgsConstructor
     @Getter
-    static class TestIdModel extends BasicIdModel {
+    static class TestIdModel extends BasicIdModel<TestEntity, TestIdModel> {
 
         private String uuid;
 
@@ -36,14 +36,59 @@ class ModelUtilsTest {
             this.setId(entity.getId());
             this.uuid = entity.getUuid();
         }
+
+        @Override
+        public TestEntity toEntity() {
+            return TestEntity.builder()
+                    .id(getId())
+                    .uuid(getUuid())
+                    .build();
+        }
+
+        @Override
+        public TestEntity toEntityOnlyId() {
+            return TestEntity.builder()
+                    .id(getId())
+                    .build();
+        }
+
+        @Override
+        public TestIdModel fromEntity(TestEntity entity) {
+            return new TestIdModel(entity);
+        }
     }
 
     @SuperBuilder
     @NoArgsConstructor
     @Getter
-    static class OtherTestIdModel extends BasicIdModel {
+    static class OtherTestIdModel extends BasicIdModel<OtherTestEntity, OtherTestIdModel> {
 
         private String uuid;
+
+        public OtherTestIdModel(OtherTestEntity entity) {
+            super(entity.getId());
+            this.uuid = entity.getUuid();
+        }
+
+        @Override
+        public OtherTestEntity toEntity() {
+            return OtherTestEntity.builder()
+                    .id(getId())
+                    .uuid(getUuid())
+                    .build();
+        }
+
+        @Override
+        public OtherTestEntity toEntityOnlyId() {
+            return OtherTestEntity.builder()
+                    .id(getId())
+                    .build();
+        }
+
+        @Override
+        public OtherTestIdModel fromEntity(OtherTestEntity entity) {
+            return new OtherTestIdModel(entity);
+        }
     }
 
     @SuperBuilder
@@ -58,6 +103,13 @@ class ModelUtilsTest {
     @SuperBuilder
     @Getter
     static class TestEntity extends BasicIdJpa {
+
+        private String uuid;
+    }
+
+    @SuperBuilder
+    @Getter
+    static class OtherTestEntity extends BasicIdJpa {
 
         private String uuid;
     }
@@ -83,12 +135,12 @@ class ModelUtilsTest {
     private static Stream<Arguments> getIdFromNestedModelOrParams() {
         Long id = MODEL_ID;
         return Stream.of(
-            Arguments.argumentSet("Both nested models in parent", buildParentModelWithBoth(id, PARENT_ID, OTHER_ID), id),
-            Arguments.argumentSet("Both nested models in parent, parent null id", buildParentModelWithBoth(id, null, OTHER_ID), id),
-            Arguments.argumentSet("Both nested models in parent, nested both null id", buildParentModelWithBoth(null, PARENT_ID, null), null),
-            Arguments.argumentSet("Both nested models in parent, other nested null id", buildParentModelWithBoth(id, PARENT_ID, null), id),
-            Arguments.argumentSet("Both nested models in parent, nested null id", buildParentModelWithBoth(null, PARENT_ID, id), id),
-            Arguments.argumentSet("Only other nested model in parent", buildParentModelWithOther(id), id)
+                Arguments.argumentSet("Both nested models in parent", buildParentModelWithBoth(id, PARENT_ID, OTHER_ID), id),
+                Arguments.argumentSet("Both nested models in parent, parent null id", buildParentModelWithBoth(id, null, OTHER_ID), id),
+                Arguments.argumentSet("Both nested models in parent, nested both null id", buildParentModelWithBoth(null, PARENT_ID, null), null),
+                Arguments.argumentSet("Both nested models in parent, other nested null id", buildParentModelWithBoth(id, PARENT_ID, null), id),
+                Arguments.argumentSet("Both nested models in parent, nested null id", buildParentModelWithBoth(null, PARENT_ID, id), id),
+                Arguments.argumentSet("Only other nested model in parent", buildParentModelWithOther(id), id)
         );
     }
 
@@ -115,7 +167,7 @@ class ModelUtilsTest {
     @Test
     void getModelFromId() {
         Long id = MODEL_ID;
-        BasicIdModel model = ModelUtils.getModelFromId(id, BasicIdModel::new);
+        TestIdModel model = ModelUtils.getModelFromId(id, TestIdModel::new);
         assertEquals(id, model.getId());
     }
 
