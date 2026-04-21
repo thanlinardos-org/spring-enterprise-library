@@ -53,17 +53,26 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
+        <!-- Explicitly tell SonarQube which Java version is used to avoid "preview features" warning -->
+        <sonar.java.source>21</sonar.java.source>
 
         <sonar.dependencyCheck.basePath>${project.basedir}/owasp-dependency-check-logs</sonar.dependencyCheck.basePath>
         <sonar.dependencyCheck.htmlReportPath>${sonar.dependencyCheck.basePath}/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
         <sonar.dependencyCheck.jsonReportPath>${sonar.dependencyCheck.basePath}/dependency-check-report.json</sonar.dependencyCheck.jsonReportPath>
         <sonar.dependencyCheck.summarize>true</sonar.dependencyCheck.summarize>
-        <sonar.coverage.exclusions>controller/debug/**/*, mavenSonarBuild.sh, owasp-dependency-check-logs/**,
-            src/main/resources/static/assets/css
+
+        <sonar.projectKey>springenterpriselibrary</sonar.projectKey>
+        <sonar.projectName>spring-enterprise-library</sonar.projectName>
+        <!-- Explicitly declare git as the SCM provider so SonarQube always uses git blame -->
+        <sonar.scm.provider>git</sonar.scm.provider>
+
+        <!-- Use project-relative paths (prefixed with **/) to avoid the deprecated module-relative path warning -->
+        <sonar.coverage.exclusions>**/controller/debug/**/*, mavenSonarBuild.sh, **/owasp-dependency-check-logs/**,
+            **/src/main/resources/static/assets/css/**
         </sonar.coverage.exclusions>
-        <sonar.exclusions>src/test/**/*, src/main/resources/static/assets/css</sonar.exclusions>
+        <sonar.exclusions>**/src/test/**/*, **/src/main/resources/static/assets/css/**</sonar.exclusions>
         <sonar.sources>src,pom.xml</sonar.sources>
-        <sonar.test.inclusions>src/test/**/*</sonar.test.inclusions>
+        <sonar.test.inclusions>**/src/test/**/*</sonar.test.inclusions>
         <sonar.tests>src</sonar.tests>
         <dependency-check-maven.nvdApiKey>placeholder</dependency-check-maven.nvdApiKey>
     </properties>
@@ -71,6 +80,7 @@
     <modules>
         <module>httpsclient</module>
         <module>spring-cloud-security</module>
+        <module>oauth2-enterprise-application</module>
     </modules>
 
     <dependencyManagement>

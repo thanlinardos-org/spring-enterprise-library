@@ -1,0 +1,58 @@
+server.port: ${CLOUD_CONFIG_SERVER_PORT}
+management:
+  endpoints.web.exposure.include: "*"
+  endpoint:
+    scheduledtasks.access: read_only
+    refresh:
+      access: unrestricted
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: cloud-config-server
+  profiles:
+    active: vault
+  jpa:
+    open-in-view: false # Enable for leaving JPA connection open while view rendering with thymeleaf
+  cloud.config:
+    enabled: true
+    server:
+      vault:
+        backend: kv
+        host: ${VAULT_HOST}
+        port: ${VAULT_PORT}
+        scheme: https
+        ssl:
+          key-store: "classpath:local_vault_client.p12"
+          key-store-password: ${KEYSTORE_PASSWORD}
+          trust-store: "classpath:truststore.p12"
+          trust-store-password: ${TRUSTSTORE_PASSWORD}
+        authentication: token
+        token: ${VAULT_TOKEN}
+        kv-version: 2
+        profile-separator: /
+  task:
+    scheduling:
+      thread-name-prefix: BatchJob-
+      pool.size: 10
+batch:
+  run-timer:
+    enabled: true
+    frequency-ms: 5000
+    initial-delay-ms: 5000
+    schedule-window-seconds: 2000
+  vault-sync:
+    backoff-step-size: 60
+    max-delay: 3600
+    max-task-retries: 5
+    max-execution-attempts: 3
+    max-lease-expiry-percent: 90
+    run-on-startup: true
+thanlinardos:
+    springenterpriselibrary:
+      secrets:
+        refresh:
+          displayValues: false
+          enabled: true
+      oauth2:
+        client-certificate-path-format: "classpath:{0}.p12"

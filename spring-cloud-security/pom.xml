@@ -35,7 +35,10 @@
         <url>scm:git:git://github.com/thanlinardos/spring-enterprise-library/tree/master/spring-cloud-security/src</url>
 	</scm>
 	<properties>
+        <!-- Empty fallback required so @{argLine} late-replacement in surefire doesn't crash -->
         <argLine/>
+        <!-- Explicit path so SonarQube finds the JaCoCo XML coverage report -->
+        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<dependencies>
         <dependency>
@@ -242,7 +245,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.4</version>
                 <configuration>
-                    <argLine>-Xshare:off -javaagent:${project.build.directory}/mockito-agent.jar ${argLine}</argLine>
+                    <!-- @{argLine} is late-bound: resolved AFTER JaCoCo's prepare-agent sets it,
+                         so the JaCoCo agent is correctly appended to the test JVM arguments -->
+                    <argLine>@{argLine} -Xshare:off -javaagent:${project.build.directory}/mockito-agent.jar</argLine>
                 </configuration>
             </plugin>
             <plugin>
