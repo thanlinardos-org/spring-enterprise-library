@@ -6,6 +6,11 @@ spring:
     name: resource-server
   profiles:
     active: ${SPRING_PROFILES_ACTIVE}
+  main:
+    lazy-initialization: true   # Defer bean creation → biggest single startup gain
+    banner-mode: off
+  jmx:
+    enabled: false              # Disables JMX MBean registration overhead
   jpa:
     open-in-view: false # Enable for leaving JPA connection open while view rendering with thymeleaf
   security:
@@ -28,6 +33,7 @@ spring:
   cloud:
     config:
       enabled: true
+      fail-fast: false
   ssl:
     bundle:
       jks:

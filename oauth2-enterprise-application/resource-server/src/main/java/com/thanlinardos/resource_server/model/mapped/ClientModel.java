@@ -2,7 +2,7 @@ package com.thanlinardos.resource_server.model.mapped;
 
 import com.thanlinardos.resource_server.model.entity.owner.ClientJpa;
 import com.thanlinardos.resource_server.model.entity.owner.OwnerJpa;
-import com.thanlinardos.resource_server.model.mapped.base.BasicAuditableModel;
+import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicAuditableModel;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.PrivilegedResource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

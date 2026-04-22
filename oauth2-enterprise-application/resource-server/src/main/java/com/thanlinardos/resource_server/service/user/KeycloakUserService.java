@@ -126,7 +126,7 @@ public class KeycloakUserService implements UserService {
     public OwnerModel createCustomerWithRoles(Customer customer) {
         UserRepresentation user = mapCustomerDetailsToUserRepresentation(customer.toRegisterCustomerDetails());
         String userId = createKeycloakUserOrThrow(user);
-        Set<String> realmRoles = customer.getRoleNames();
+        Set<String> realmRoles = customer.getRoleNamesNoPrefix();
 
         addRealmRolesToUserOrThrow(userId, realmRoles);
         updatePasswordCredentialToUserOrThrow(userId, customer.getPassword());

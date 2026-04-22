@@ -44,7 +44,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>[3.5.13,3.99.99)</spring-boot.version>
         <spring-boot-plugin.version>3.5.13</spring-boot-plugin.version>
-        <spring-cloud-config.version>[4.3.1,4.99.99)</spring-cloud-config.version>
+        <spring-cloud-config.version>[4.3.2,4.99.99)</spring-cloud-config.version>
         <keycloak-client-thanlinardos-fork.version>999.0.0-SNAPSHOT</keycloak-client-thanlinardos-fork.version>
         <jjwt.version>[0.13.0,)</jjwt.version>
         <jacoco.version>0.8.14</jacoco.version>
@@ -95,6 +95,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>6.2.18</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>6.2.18</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -317,6 +327,11 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-mysql</artifactId>
                 <version>10.20.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.84</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

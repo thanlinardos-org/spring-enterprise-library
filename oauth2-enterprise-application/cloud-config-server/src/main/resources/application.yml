@@ -8,10 +8,18 @@ management:
 spring:
   main:
     allow-bean-definition-overriding: true
+    banner-mode: off
+    lazy-initialization: true
+  jmx:
+    enabled: false
   application:
     name: cloud-config-server
   profiles:
     active: vault
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   jpa:
     open-in-view: false # Enable for leaving JPA connection open while view rendering with thymeleaf
   cloud.config:

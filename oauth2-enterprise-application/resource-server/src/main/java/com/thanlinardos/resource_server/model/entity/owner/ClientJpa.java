@@ -1,6 +1,6 @@
 package com.thanlinardos.resource_server.model.entity.owner;
 
-import com.thanlinardos.resource_server.model.entity.base.BasicAuditableJpa;
+import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicAuditableJpa;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.converters.UUIDConverter;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

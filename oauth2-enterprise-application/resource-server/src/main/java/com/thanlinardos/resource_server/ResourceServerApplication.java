@@ -1,7 +1,7 @@
 package com.thanlinardos.resource_server;
 
 import com.thanlinardos.resource_server.model.mapped.RoleModel;
-import com.thanlinardos.resource_server.repository.base.BasicIdJpaExtendedRepositoryImpl;
+import com.thanlinardos.spring_enterprise_library.repository.base.BasicIdJpaExtendedRepositoryImpl;
 import com.thanlinardos.resource_server.service.role.RoleCacheService;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.Authority;
 import lombok.RequiredArgsConstructor;

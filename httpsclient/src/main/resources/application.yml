@@ -8,3 +8,8 @@ thanlinardos:
       min-date: 0001-01-01
       max-date-time: 9999-12-31T23:59:59.999999999
       min-date-time: 0001-01-01T00:00:00
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration

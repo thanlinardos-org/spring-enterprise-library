@@ -5,6 +5,7 @@ import com.thanlinardos.resource_server.model.info.RoleInfo;
 import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.Authority;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.Role;
+import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.RoleGrantedAuthority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static com.thanlinardos.spring_enterprise_library.spring_cloud_security.constants.SecurityCommonConstants.ROLE_PREFIX;
 
@@ -48,11 +50,19 @@ public class RoleModel extends BasicIdModel<RoleJpa, RoleModel> implements Seria
 
     @Override
     public Collection<GrantedAuthority> getGrantedAuthorities() {
+        return Stream.concat(getGrantedAuthorityStream(), Stream.of(toRoleGrantedAuthority()))
+                .toList();
+    }
+
+    private RoleGrantedAuthority toRoleGrantedAuthority() {
+        return new RoleGrantedAuthority(role, privilegeLvl);
+    }
+
+    private Stream<GrantedAuthority> getGrantedAuthorityStream() {
         return authorities.stream()
                 .map(Authority::getName)
                 .map(SimpleGrantedAuthority::new)
-                .map(GrantedAuthority.class::cast)
-                .toList();
+                .map(GrantedAuthority.class::cast);
     }
 
     @Override

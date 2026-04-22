@@ -40,14 +40,6 @@ public interface RoleService<T extends Role> {
     Collection<T> findRolesWithoutValidation(Collection<String> names);
 
     /**
-     * Finds granted authorities associated with a specific role.
-     *
-     * @param role the role for which to find granted authorities.
-     * @return a collection of granted authorities associated with the given role.
-     */
-    Collection<GrantedAuthority> findGrantedAuthoritiesWithRole(T role);
-
-    /**
      * Finds granted authorities associated with a collection of role names.
      *
      * @param roleNames a collection of role names, each prefixed with {@link SecurityCommonConstants#ROLE_PREFIX}.

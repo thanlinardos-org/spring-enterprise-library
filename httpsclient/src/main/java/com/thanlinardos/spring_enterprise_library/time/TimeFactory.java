@@ -32,110 +32,86 @@ public class TimeFactory {
     }
 
     /**
+     * Asserts that the TimeProvider has been initialized by Spring before any static method is called.
+     * This guards against calling TimeFactory static methods in bean constructors before Spring
+     * has had a chance to instantiate TimeFactory (e.g. when lazy-initialization is enabled globally).
+     *
+     * @throws IllegalStateException if TimeFactory has not been initialized yet.
+     */
+    private static void assertInitialized() {
+        if (timeProvider == null) {
+            throw new IllegalStateException(
+                    """
+                            TimeFactory has not been initialized yet. \
+                            Ensure that TimeFactory is instantiated by Spring before calling its static methods. \
+                            If using spring.main.lazy-initialization=true, add @DependsOn("timeFactory") \
+                            to any bean that calls TimeFactory in its constructor."""
+            );
+        }
+    }
+
+    /**
      * Gets the accuracy of the date provider.
      *
      * @return the accuracy of the date provider.
      */
     public static TimeUnit getAccuracy() {
+        assertInitialized();
         return timeProvider.accuracy();
     }
 
-    /**
-     * Gets the current date.
-     *
-     * @return the current date.
-     */
     public static LocalDate getDate() {
+        assertInitialized();
         return timeProvider.getCurrentDate();
     }
 
-    /**
-     * Gets the current date time.
-     *
-     * @return the current date time.
-     */
     public static LocalDateTime getDateTime() {
+        assertInitialized();
         return timeProvider.getCurrentDateTime();
     }
 
-    /**
-     * Gets the current instant.
-     *
-     * @return the current instant.
-     */
     public static Instant getInstant() {
+        assertInitialized();
         return timeProvider.getCurrentInstant();
     }
 
-    /**
-     * Gets the maximum date that can be used in the system.
-     *
-     * @return the maximum date that can be used in the system.
-     */
     public static LocalDate getMaxDate() {
+        assertInitialized();
         return timeProvider.maxDate();
     }
 
-    /**
-     * Gets the minimum date that can be used in the system.
-     *
-     * @return the minimum date that can be used in the system.
-     */
     public static LocalDate getMinDate() {
+        assertInitialized();
         return timeProvider.minDate();
     }
 
-    /**
-     * Gets the maximum date time that can be used in the system.
-     *
-     * @return the maximum date time that can be used in the system.
-     */
     public static LocalDateTime getMaxDateTime() {
+        assertInitialized();
         return timeProvider.maxDateTime();
     }
 
-    /**
-     * Gets the minimum date time that can be used in the system.
-     *
-     * @return the minimum date time that can be used in the system.
-     */
     public static LocalDateTime getMinDateTime() {
+        assertInitialized();
         return timeProvider.minDateTime();
     }
 
-    /**
-     * Gets the minimum instant that can be used in the system.
-     *
-     * @return the minimum instant that can be used in the system.
-     */
     public static Instant getMaxInstant() {
+        assertInitialized();
         return getMaxDateTime().toInstant(getDefaultZone());
     }
 
-    /**
-     * Gets the minimum instant that can be used in the system.
-     *
-     * @return the minimum instant that can be used in the system.
-     */
     public static Instant getMinInstant() {
+        assertInitialized();
         return getMinDateTime().toInstant(getDefaultZone());
     }
 
-    /**
-     * Gets current time zone.
-     *
-     * @return the current time zone as a ZoneId object.
-     */
     public static ZoneId getDefaultZoneId() {
+        assertInitialized();
         return timeProvider.zoneId();
     }
 
-    /**
-     * Gets current time zone.
-     *
-     * @return the current time zone as a ZoneOffset object.
-     */
     public static ZoneOffset getDefaultZone() {
+        assertInitialized();
         return timeProvider.getDefaultZone();
     }
 }

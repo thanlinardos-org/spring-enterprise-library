@@ -1,6 +1,6 @@
 package com.thanlinardos.resource_server.model.entity.owner;
 
-import com.thanlinardos.resource_server.model.entity.base.BasicAuditableJpa;
+import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicAuditableJpa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;

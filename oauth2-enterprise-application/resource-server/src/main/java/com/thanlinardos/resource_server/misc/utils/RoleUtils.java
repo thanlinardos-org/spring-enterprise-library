@@ -1,7 +1,10 @@
 package com.thanlinardos.resource_server.misc.utils;
 
+import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.RoleGrantedAuthority;
 import org.keycloak.representations.idm.RoleRepresentation;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,10 +25,28 @@ public class RoleUtils {
                 .collect(Collectors.toSet());
     }
 
-    public static List<String> getRoleNamesFromAuthorities(Collection<? extends GrantedAuthority> authorities) {
+    public static int getPrivilegeLevelFromGrantedAuthorities(Collection<? extends GrantedAuthority> authorities) {
         return authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .filter(name -> name.startsWith(ROLE_PREFIX))
-                .toList();
+                .filter(RoleGrantedAuthority.class::isInstance)
+                .map(RoleGrantedAuthority.class::cast)
+                .map(RoleGrantedAuthority::privilegeLevel)
+                .min(Integer::compareTo)
+                .orElse(Integer.MAX_VALUE);
+    }
+
+    public static int getPrivilegeLevelFromContextForRoles(Set<String> roleNames) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return authentication.getAuthorities().stream()
+                .filter(RoleGrantedAuthority.class::isInstance)
+                .map(RoleGrantedAuthority.class::cast)
+                .filter(roleGrantedAuthority -> roleNames.contains(roleGrantedAuthority.getAuthority()))
+                .map(RoleGrantedAuthority::privilegeLevel)
+                .min(Integer::compareTo)
+                .orElse(Integer.MAX_VALUE);
+    }
+
+    public static int getPrivilegeLevelFromContextForRole(String roleName) {
+        return getPrivilegeLevelFromContextForRoles(Set.of(roleName));
     }
 }

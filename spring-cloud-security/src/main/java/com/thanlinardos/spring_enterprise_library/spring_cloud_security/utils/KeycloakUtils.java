@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.thanlinardos.spring_enterprise_library.objects.utils.FunctionUtils.stream;
 import static com.thanlinardos.spring_enterprise_library.spring_cloud_security.constants.SecurityCommonConstants.ROLE_PREFIX;
 
 /**
@@ -48,8 +49,8 @@ public class KeycloakUtils {
      */
     public static <T extends Role> Collection<GrantedAuthority> getSimpleGrantedAuthoritiesFromRealmAccess(Map<?, ?> realmAccess, RoleService<T> roleService) {
         return parseRoleNamesStream(realmAccess, roleService).stream()
-                .map(roleService::findGrantedAuthoritiesWithRole)
-                .flatMap(Collection::stream)
+                .flatMap(stream(T::getGrantedAuthorities))
+                .distinct()
                 .toList();
     }
 

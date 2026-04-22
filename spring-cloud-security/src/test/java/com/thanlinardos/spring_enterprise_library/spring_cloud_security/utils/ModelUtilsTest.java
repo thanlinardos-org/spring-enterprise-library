@@ -94,10 +94,36 @@ class ModelUtilsTest {
     @SuperBuilder
     @NoArgsConstructor
     @Getter
-    static class TestIdParentModel extends TestIdModel {
+    static class TestIdParentModel extends BasicIdModel<ParentTestEntity, TestIdParentModel> {
 
+        private String uuid;
         private TestIdModel nestedModel;
         private OtherTestIdModel otherNestedModel;
+
+        @Override
+        public ParentTestEntity toEntity() {
+            return ParentTestEntity.builder()
+                    .id(getId())
+                    .uuid(getUuid())
+                    .nestedEntity(getNestedModel() != null ? getNestedModel().toEntity() : null)
+                    .build();
+        }
+
+        @Override
+        public ParentTestEntity toEntityOnlyId() {
+            return ParentTestEntity.builder()
+                    .id(getId())
+                    .build();
+        }
+
+        @Override
+        public TestIdParentModel fromEntity(ParentTestEntity entity) {
+            return TestIdParentModel.builder()
+                    .id(entity.getId())
+                    .uuid(entity.getUuid())
+                    .nestedModel(entity.getNestedEntity() != null ? new TestIdModel(entity.getNestedEntity()) : null)
+                    .build();
+        }
     }
 
     @SuperBuilder
@@ -105,6 +131,14 @@ class ModelUtilsTest {
     static class TestEntity extends BasicIdJpa {
 
         private String uuid;
+    }
+
+    @SuperBuilder
+    @Getter
+    static class ParentTestEntity extends BasicIdJpa {
+
+        private String uuid;
+        private TestEntity nestedEntity;
     }
 
     @SuperBuilder

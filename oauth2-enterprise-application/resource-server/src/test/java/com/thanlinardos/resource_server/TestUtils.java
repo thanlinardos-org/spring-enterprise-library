@@ -4,6 +4,7 @@ import com.thanlinardos.resource_server.model.info.OwnerType;
 import com.thanlinardos.resource_server.model.mapped.CustomerModel;
 import com.thanlinardos.resource_server.model.mapped.OwnerModel;
 import com.thanlinardos.resource_server.model.mapped.RoleModel;
+import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.RoleGrantedAuthority;
 import com.thanlinardos.spring_enterprise_library.time.TimeFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,19 +30,19 @@ public class TestUtils implements WithSecurityContextFactory<WithMockCustomUser>
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String ROLE_OWNER = "ROLE_OWNER";
     public static final GrantedAuthority[] USER_AUTHORITIES = {
-            new SimpleGrantedAuthority(ROLE_USER),
+            new RoleGrantedAuthority(ROLE_USER, 3),
             new SimpleGrantedAuthority("READ_USER"),
             new SimpleGrantedAuthority("READ_OWNER"),
             new SimpleGrantedAuthority("READ_CUSTOMERS_USERNAME")
     };
     public static final GrantedAuthority[] MANAGER_AUTHORITIES = {
-            new SimpleGrantedAuthority(ROLE_MANAGER),
+            new RoleGrantedAuthority(ROLE_MANAGER, 2),
             new SimpleGrantedAuthority("READ_USER"),
             new SimpleGrantedAuthority("READ_OWNER"),
             new SimpleGrantedAuthority("READ_CUSTOMERS_USERNAME")
     };
     public static final GrantedAuthority[] ADMIN_AUTHORITIES = {
-            new SimpleGrantedAuthority(ROLE_ADMIN),
+            new RoleGrantedAuthority(ROLE_ADMIN, 1),
             new SimpleGrantedAuthority("READ_USER"),
             new SimpleGrantedAuthority("READ_OWNER"),
             new SimpleGrantedAuthority("READ_CUSTOMERS_USERNAME"),
@@ -49,7 +50,7 @@ public class TestUtils implements WithSecurityContextFactory<WithMockCustomUser>
             new SimpleGrantedAuthority("CREATE_CUSTOMER"),
     };
     public static final GrantedAuthority[] OWNER_AUTHORITIES = {
-            new SimpleGrantedAuthority(ROLE_OWNER),
+            new RoleGrantedAuthority(ROLE_OWNER, 0),
             new SimpleGrantedAuthority("READ_USER"),
             new SimpleGrantedAuthority("READ_OWNER"),
             new SimpleGrantedAuthority("READ_CUSTOMERS_USERNAME"),
@@ -73,15 +74,15 @@ public class TestUtils implements WithSecurityContextFactory<WithMockCustomUser>
 
     public static void autoAuthenticateAdminUser() {
         Authentication authentication = new UsernamePasswordAuthenticationToken(ADMIN_PRINCIPAL, "pass",
-                List.of(new SimpleGrantedAuthority("ROLE_USER"),
-                        new SimpleGrantedAuthority("ROLE_MANAGER"),
-                        new SimpleGrantedAuthority("ROLE_ADMIN")));
+                List.of(new RoleGrantedAuthority(ROLE_USER, 3),
+                        new RoleGrantedAuthority(ROLE_MANAGER, 2),
+                        new RoleGrantedAuthority(ROLE_ADMIN, 1)));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     public static void autoAuthenticateUser() {
         Authentication authentication = new UsernamePasswordAuthenticationToken(USER_PRINCIPAL, "pass",
-                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                List.of(new RoleGrantedAuthority(ROLE_USER, 3)));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

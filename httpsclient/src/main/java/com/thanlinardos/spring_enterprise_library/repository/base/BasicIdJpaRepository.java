@@ -1,4 +1,4 @@
-package com.thanlinardos.resource_server.repository.base;
+package com.thanlinardos.spring_enterprise_library.repository.base;
 
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import org.springframework.data.jpa.repository.JpaRepository;

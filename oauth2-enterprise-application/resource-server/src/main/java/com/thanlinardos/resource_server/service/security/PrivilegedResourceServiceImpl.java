@@ -2,17 +2,14 @@ package com.thanlinardos.resource_server.service.security;
 
 import com.thanlinardos.resource_server.aspect.annotation.ExcludeFromLoggingAspect;
 import com.thanlinardos.resource_server.misc.utils.RoleUtils;
-import com.thanlinardos.resource_server.service.role.RoleServiceImpl;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.api.service.PrivilegedResourceService;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.PrivilegedResource;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
@@ -20,8 +17,6 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 @RequiredArgsConstructor
 @Service
 public class PrivilegedResourceServiceImpl implements PrivilegedResourceService {
-
-    private final RoleServiceImpl roleService;
 
     @Override
     @ExcludeFromLoggingAspect
@@ -48,7 +43,7 @@ public class PrivilegedResourceServiceImpl implements PrivilegedResourceService 
         if (resource == null) {
             return false;
         }
-        Integer privilegeLevel = getPrivilegeLevelFromAuthorities(authentication.getAuthorities());
+        Integer privilegeLevel = RoleUtils.getPrivilegeLevelFromGrantedAuthorities(authentication.getAuthorities());
         Jwt principal = (Jwt) authentication.getPrincipal();
         return privilegeLevel <= resource.getMaxPrivilegeLevel()
                 && (privilegeLevel < resource.getPrivilegeLevel()
@@ -69,8 +64,4 @@ public class PrivilegedResourceServiceImpl implements PrivilegedResourceService 
                 && StringUtils.isNotBlank(jwt.getSubject());
     }
 
-    private Integer getPrivilegeLevelFromAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        Collection<String> roleNames = RoleUtils.getRoleNamesFromAuthorities(authorities);
-        return roleService.getPrivilegeLevelFromRoleNames(roleNames);
-    }
 }

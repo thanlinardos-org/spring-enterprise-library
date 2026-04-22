@@ -1,9 +1,8 @@
-package com.thanlinardos.resource_server.model.mapped.base;
+package com.thanlinardos.spring_enterprise_library.model.mapped.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.thanlinardos.resource_server.model.entity.base.BasicAuditableJpa;
+import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicAuditableJpa;
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
-import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

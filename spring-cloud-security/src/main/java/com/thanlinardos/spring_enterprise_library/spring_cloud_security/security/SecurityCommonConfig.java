@@ -150,7 +150,7 @@ public class SecurityCommonConfig<T extends Role> {
     private Converter<Jwt, Collection<GrantedAuthority>> getRoleConverter(OAuth2AuthServerType authServer) {
         return switch (authServer) {
             case KEYCLOAK -> new KeycloakRoleConverter<>(roleService);
-            case SPRING_OAUTH2_SERVER -> new SpringAuthServerRoleConverter();
+            case SPRING_OAUTH2_SERVER -> new SpringAuthServerRoleConverter<>(roleService);
         };
     }
 }

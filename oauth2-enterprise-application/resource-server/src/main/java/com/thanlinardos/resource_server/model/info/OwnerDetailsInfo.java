@@ -1,6 +1,7 @@
 package com.thanlinardos.resource_server.model.info;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.thanlinardos.resource_server.misc.utils.RoleUtils;
 import com.thanlinardos.resource_server.model.mapped.RoleModel;
 import com.thanlinardos.spring_enterprise_library.parse.utils.ParserUtil;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.PrivilegedResource;
@@ -30,7 +31,7 @@ public class OwnerDetailsInfo implements Serializable, PrivilegedResource {
 
     @Override
     public int getPrivilegeLevel() {
-        return PrivilegedResource.calcPrivilegeLvlFromRoles(getRoles()); // TODO fix: always gives 0 privilege level, because roles arent fetched from service
+        return PrivilegedResource.calcPrivilegeLvlFromRoles(getRoles());
     }
 
     @Override
@@ -39,14 +40,20 @@ public class OwnerDetailsInfo implements Serializable, PrivilegedResource {
     }
 
     /**
-     * Get the names of the roles assigned to the owner.
+     * Get the names of the roles assigned to the owner, without the _ROLE prefix.
      *
      * @return A set of role names.
      */
     @JsonIgnore
-    public Set<String> getRoleNames() { // TODO fix: always gives 0 privilege level, because roles arent fetched from service
+    public Set<String> getRoleNamesNoPrefix() {
         return getRoles().stream()
-                .map(RoleModel::getName)
+                .map(RoleModel::getNameNoPrefix)
+                .collect(Collectors.toSet());
+    }
+
+    protected Set<RoleModel> buildRoleModels(Set<String> roleNames) {
+        return roleNames.stream()
+                .map(role -> RoleModel.builder().role(role).privilegeLvl(RoleUtils.getPrivilegeLevelFromContextForRole(role)).build()) //NOSONAR (S3252)
                 .collect(Collectors.toSet());
     }
 }

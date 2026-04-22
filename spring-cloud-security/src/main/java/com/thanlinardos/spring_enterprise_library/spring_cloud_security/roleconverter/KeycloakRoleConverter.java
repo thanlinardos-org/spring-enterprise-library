@@ -38,7 +38,7 @@ public class KeycloakRoleConverter<T extends Role> implements Converter<Jwt, Col
      * @return a collection of GrantedAuthority objects representing the roles.
      */
     @Override
-    public Collection<GrantedAuthority> convert(@Nonnull Jwt jwt) {
+    public Collection<GrantedAuthority> convert(@Nonnull Jwt jwt) { //NOSONAR (S2648)
         return getGrantedAuthoritiesFromJwt(jwt, roleService);
     }
 }

@@ -7,7 +7,7 @@ import com.thanlinardos.resource_server.model.info.Client;
 import com.thanlinardos.resource_server.model.info.Customer;
 import com.thanlinardos.resource_server.model.info.OwnerDetailsInfo;
 import com.thanlinardos.resource_server.model.info.OwnerType;
-import com.thanlinardos.resource_server.model.mapped.base.BasicAuditableModel;
+import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicAuditableModel;
 import com.thanlinardos.spring_enterprise_library.error.errorcodes.ErrorCode;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.PrivilegedResource;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.utils.ModelUtils;

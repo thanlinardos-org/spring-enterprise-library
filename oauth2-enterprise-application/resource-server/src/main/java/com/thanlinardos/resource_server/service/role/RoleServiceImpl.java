@@ -1,6 +1,5 @@
 package com.thanlinardos.resource_server.service.role;
 
-import com.thanlinardos.resource_server.aspect.annotation.ExcludeFromLoggingAspect;
 import com.thanlinardos.resource_server.model.constants.SecurityConstants;
 import com.thanlinardos.resource_server.model.info.AuthorityInfo;
 import com.thanlinardos.resource_server.model.info.RoleInfo;
@@ -10,14 +9,11 @@ import com.thanlinardos.resource_server.service.role.api.OauthRoleService;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,17 +66,10 @@ public class RoleServiceImpl implements OauthRoleService {
     }
 
     @Override
-    @ExcludeFromLoggingAspect
-    public Collection<GrantedAuthority> findGrantedAuthoritiesWithRole(RoleModel role) {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(role.getGrantedAuthorities());
-        grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-        return grantedAuthorities;
-    }
-
-    @Override
     public Collection<GrantedAuthority> findGrantedAuthoritiesWithRoles(Collection<String> roleNames) {
         return findRoleStream(roleNames)
-                .flatMap(stream(this::findGrantedAuthoritiesWithRole))
+                .flatMap(stream(RoleModel::getGrantedAuthorities))
+                .distinct()
                 .toList();
     }
 
