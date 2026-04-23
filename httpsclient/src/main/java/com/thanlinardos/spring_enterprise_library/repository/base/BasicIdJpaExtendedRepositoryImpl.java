@@ -22,20 +22,12 @@ public class BasicIdJpaExtendedRepositoryImpl<T extends BasicIdJpa> extends Simp
 
     @Transactional
     @Override
-    public void saveOrUpdateFoundByProperty(T entity, Supplier<Optional<T>> findEntityBy) {
-        Optional<Long> id = findEntityBy.get()
-                .map(BasicIdJpa::getId);
-        if (id.isPresent()) {
-            entity = update(entity, id.get());  // needs reassignment as merge returns the managed entity without changing the input
-        } else {
-            entityManager.persist(entity);
-        }
-        entityManager.refresh(entity);
-    }
-
-    private T update(T entity, Long id) {
-        entity.setId(id);
-        return entityManager.merge(entity);
+    public void saveFoundByProperty(T entity, Supplier<Optional<T>> findEntityBy) {
+        findEntityBy.get()
+                .map(BasicIdJpa::getId)
+                .ifPresent(entity::setId);
+        entity = super.save(entity);
+        flushAndRefresh(entity);
     }
 
     @Transactional
@@ -43,7 +35,7 @@ public class BasicIdJpaExtendedRepositoryImpl<T extends BasicIdJpa> extends Simp
     public <S extends BasicIdJpa> void removeRelation(T entity, Function<T, Collection<S>> getRelations, S subEntityWithId) {
         getRelations.apply(entity).remove(subEntityWithId);
         entityManager.persist(entity);
-        entityManager.refresh(entity);
+        flushAndRefresh(entity);
     }
 
     @Transactional
@@ -51,7 +43,7 @@ public class BasicIdJpaExtendedRepositoryImpl<T extends BasicIdJpa> extends Simp
     public <S extends BasicIdJpa> void removeRelations(T entity, Function<T, Collection<S>> getRelations, Collection<S> subEntitiesWithId) {
         getRelations.apply(entity).removeAll(subEntitiesWithId);
         entityManager.persist(entity);
-        entityManager.refresh(entity);
+        flushAndRefresh(entity);
     }
 
     @Transactional
@@ -61,6 +53,11 @@ public class BasicIdJpaExtendedRepositoryImpl<T extends BasicIdJpa> extends Simp
         relations.clear();
         relations.addAll(subEntitiesWithId);
         entityManager.persist(entity);
+        flushAndRefresh(entity);
+    }
+
+    private void flushAndRefresh(T entity) {
+        entityManager.flush();
         entityManager.refresh(entity);
     }
 }

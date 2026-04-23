@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public interface BasicIdJpaExtendedRepository<T extends BasicIdJpa> {
 
-    void saveOrUpdateFoundByProperty(T entity, Supplier<Optional<T>> findEntityBy);
+    void saveFoundByProperty(T entity, Supplier<Optional<T>> findEntityBy);
 
     <S extends BasicIdJpa> void removeRelation(T entity, Function<T, Collection<S>> getRelations, S subEntityWithId);
 

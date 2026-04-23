@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import com.thanlinardos.cloud_config_server.batch.BatchTaskScheduler;
-import com.thanlinardos.cloud_config_server.batch.Task;
+import com.thanlinardos.cloud_config_server.batch.BatchRunTimer;
+import com.thanlinardos.spring_enterprise_library.batch.BatchTaskScheduler;
+import com.thanlinardos.spring_enterprise_library.batch.Task;
 import com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncJobConfig;
 import com.thanlinardos.cloud_config_server.vault.properties.update.credentials.ApplicationEnvironmentProperties;
 import com.thanlinardos.cloud_config_server.vault.properties.update.credentials.ApplicationVaultProperties;
@@ -28,6 +29,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -50,8 +52,8 @@ public class VaultSyncJob extends BatchTaskScheduler<VaultSyncJobConfig> {
     }
 
     @Override
-    protected String getTaskName(String... args) {
-        return VaultIntegrationHelper.getAppEnvName(args[0], args[1]);
+    protected String getTaskName(Object... args) {
+        return VaultIntegrationHelper.getAppEnvName((String) args[0], (String) args[1]);
     }
 
     /**
@@ -81,6 +83,11 @@ public class VaultSyncJob extends BatchTaskScheduler<VaultSyncJobConfig> {
         properties.applications()
                 .forEach(application -> syncDatabaseCredentialsForApplication(application, properties));
         return getNextRunTime(properties);
+    }
+
+    @Override
+    protected ConcurrentMap<String, Task> getBatchRuns() {
+        return BatchRunTimer.getBatchRuns();
     }
 
     private Instant getNextRunTime(VaultUpdateCredentialsProperties properties) {

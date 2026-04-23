@@ -69,6 +69,7 @@ public class KeycloakEventService {
         return getSortedEvents(fetchEvents(), fetchAdminEvents());
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends BasicIdJpa, E extends EventPlaceholder<T>> List<E> getSortedEvents(Stream<KeycloakEventModel> events, Stream<KeycloakAdminEventModel> adminEvents) {
         return Stream.concat(((Stream<E>) events), ((Stream<E>) adminEvents))
                 .sorted(Comparator.comparingLong(EventPlaceholder::getTime))
@@ -109,12 +110,16 @@ public class KeycloakEventService {
 
     private Set<KeycloakRoleModel> parseRoleRepresentations(String representation) {
         try {
-            return ((List<RoleRepresentation>) objectMapper.readerForListOf(RoleRepresentation.class).readValue(representation)).stream()
+            return readRoleRepresentations(representation).stream()
                     .map(KeycloakRoleModel::fromRepresentation)
                     .collect(Collectors.toSet());
         } catch (JsonProcessingException e) {
             throw ErrorCode.ILLEGAL_ARGUMENT.createCoreException("Failed to parse roles from event", e);
         }
+    }
+
+    private List<RoleRepresentation> readRoleRepresentations(String representation) throws JsonProcessingException {
+        return objectMapper.readerForListOf(RoleRepresentation.class).readValue(representation);
     }
 
     private <T extends BasicIdJpa, E extends EventPlaceholder<T>> boolean isNotProcessed(E e) {
@@ -225,11 +230,11 @@ public class KeycloakEventService {
 
     private <T extends BasicIdJpa, E extends EventPlaceholder<T>> boolean ignoreIfAlreadyFailedOrSaveAsFailed(List<E> failedEvents, E event) {
         if (event.isContainedInEvents(failedEvents)) {
-            logKeycloakEvent(Level.ERROR, event, "Ignored event due to the same existing failed event with uuid", event.getUuid());
+            logKeycloakEventError(event, "Ignored event due to the same existing failed event with uuid", event.getUuid());
             event.setStatus(EventStatusType.IGNORED);
             return false;
         } else if (event.isNotSkippedAsFailed()) {
-            logKeycloakEvent(Level.ERROR, event, "Skipped and saved as failed event due to existing failed event with matching resource id", event.getResourceId());
+            logKeycloakEventError(event, "Skipped and saved as failed event due to existing failed event with matching resource id", event.getResourceId());
             event.setStatus(EventStatusType.SKIPPED_AS_FAILED);
             saveEventIfFailed(event);
             return true;
@@ -407,12 +412,12 @@ public class KeycloakEventService {
         }
     }
 
-    private <T extends BasicIdJpa, E extends EventPlaceholder<T>> void logKeycloakEvent(Level level, E event, String message, Object parsedResource) {
+    private <T extends BasicIdJpa, E extends EventPlaceholder<T>> void logKeycloakEventError(E event, String message, Object parsedResource) {
         switch (event) {
             case KeycloakAdminEventModel adminEvent ->
-                    logAdminEvent(level, adminEvent, message, parsedResource);
+                    logAdminEvent(Level.ERROR, adminEvent, message, parsedResource);
             case KeycloakEventModel eventPlaceholder ->
-                    logEvent(level, eventPlaceholder, message, parsedResource);
+                    logEvent(Level.ERROR, eventPlaceholder, message, parsedResource);
             default -> throw invalidEventClassException(event);
         }
     }

@@ -1,20 +1,21 @@
-package com.thanlinardos.cloud_config_server.batch;
+package com.thanlinardos.spring_enterprise_library.batch;
 
-import com.thanlinardos.cloud_config_server.batch.properties.BatchSchedulerConfig;
+import com.thanlinardos.spring_enterprise_library.batch.properties.BatchSchedulerConfig;
 import com.thanlinardos.spring_enterprise_library.math.utils.BackOffUtils;
 import com.thanlinardos.spring_enterprise_library.time.TimeFactory;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
@@ -52,8 +53,8 @@ public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
             stopAllTasks();
             scheduleRunAttempt();
         }
-        long executionTIme = System.currentTimeMillis() - start;
-        logSchedulerInfo("Task scheduler finished in {} ms.", executionTIme);
+        long executionTime = System.currentTimeMillis() - start;
+        logSchedulerInfo("Task scheduler finished in {} ms.", executionTime);
     }
 
     /**
@@ -70,6 +71,17 @@ public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
      */
     public String getName() {
         return config.getName();
+    }
+
+    protected abstract ConcurrentMap<String, Task> getBatchRuns();
+
+    @Nullable
+    private Task getCurrentRun() {
+        return getBatchRuns().get(getName());
+    }
+
+    private void registerRun(Task jobRun) {
+        getBatchRuns().put(getName(), jobRun);
     }
 
     private void scheduleNextRun(Instant nextRunTime) {
@@ -102,10 +114,6 @@ public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
         return nextRun;
     }
 
-    private void registerRun(Task jobRun) {
-        BatchRunTimer.getBatchRuns().put(getName(), jobRun);
-    }
-
     private Task scheduleRun(Instant nextRunTime, Runnable runnable, int currentAttempt, Instant now) {
         if (nextRunTime.isBefore(now.plusMillis(getConfig().getTimerFrequencyMs()))) {
             return scheduleTask(currentAttempt, runnable, getName(), nextRunTime);
@@ -118,11 +126,6 @@ public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
         return Optional.ofNullable(getCurrentRun())
                 .map(Task::getRetryCount)
                 .orElse(0);
-    }
-
-    @Nullable
-    private Task getCurrentRun() {
-        return BatchRunTimer.getBatchRuns().get(getName());
     }
 
     private void stopAllTasks() {
@@ -234,7 +237,7 @@ public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
      * @param args the arguments to generate the task name.
      * @return the unique name of the task.
      */
-    protected abstract String getTaskName(String... args);
+    protected abstract String getTaskName(Object... args);
 
     private int cancelMarkedTask(Task task) {
         boolean successfullyCanceled = Optional.ofNullable(task.getScheduledFuture())

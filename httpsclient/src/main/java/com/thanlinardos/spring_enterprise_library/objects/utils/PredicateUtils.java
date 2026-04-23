@@ -163,6 +163,14 @@ public class PredicateUtils {
         return negate(contains(collection, extractor));
     }
 
+    public static <T, R> Predicate<T> selfContains(R value, Function<T, Collection<R>> collectionExtractor) {
+        return t -> collectionExtractor.apply(t).contains(value);
+    }
+
+    public static <T, R> Predicate<T> selfNotContains(R value, Function<T, Collection<R>> collectionExtractor) {
+        return negate(selfContains(value, collectionExtractor));
+    }
+
     /**
      * Negates the input predicate.
      *

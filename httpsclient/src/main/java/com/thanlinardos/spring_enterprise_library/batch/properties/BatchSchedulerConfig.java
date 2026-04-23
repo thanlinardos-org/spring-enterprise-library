@@ -1,4 +1,4 @@
-package com.thanlinardos.cloud_config_server.batch.properties;
+package com.thanlinardos.spring_enterprise_library.batch.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

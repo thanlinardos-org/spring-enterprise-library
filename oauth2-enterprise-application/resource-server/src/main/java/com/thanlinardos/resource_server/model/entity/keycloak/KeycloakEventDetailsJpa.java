@@ -1,6 +1,7 @@
 package com.thanlinardos.resource_server.model.entity.keycloak;
 
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -12,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

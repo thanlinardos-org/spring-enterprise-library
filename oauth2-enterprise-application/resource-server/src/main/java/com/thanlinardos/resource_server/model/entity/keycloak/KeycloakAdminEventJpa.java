@@ -9,6 +9,7 @@ import com.thanlinardos.resource_server.model.entity.keycloak.converter.EventSta
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.converters.UUIDConverter;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.utils.EntityUtils;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -21,7 +22,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

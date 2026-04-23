@@ -1,6 +1,7 @@
 package com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Collection;
@@ -78,6 +79,15 @@ public interface PrivilegedResource {
     static <T extends Role> int calcPrivilegeLvlFromRoles(Collection<T> roles) {
         return roles.stream()
                 .map(Role::getPrivilegeLvl)
+                .min(Integer::compareTo)
+                .orElse(Integer.MAX_VALUE);
+    }
+
+    static int getPrivilegeLevelFromGrantedAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        return authorities.stream()
+                .filter(RoleGrantedAuthority.class::isInstance)
+                .map(RoleGrantedAuthority.class::cast)
+                .map(RoleGrantedAuthority::privilegeLevel)
                 .min(Integer::compareTo)
                 .orElse(Integer.MAX_VALUE);
     }

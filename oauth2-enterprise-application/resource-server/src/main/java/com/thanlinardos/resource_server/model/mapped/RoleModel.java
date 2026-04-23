@@ -1,5 +1,6 @@
 package com.thanlinardos.resource_server.model.mapped;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thanlinardos.resource_server.model.entity.role.RoleJpa;
 import com.thanlinardos.resource_server.model.info.RoleInfo;
 import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
@@ -48,6 +49,7 @@ public class RoleModel extends BasicIdModel<RoleJpa, RoleModel> implements Seria
                 .build();
     }
 
+    @JsonIgnore
     @Override
     public Collection<GrantedAuthority> getGrantedAuthorities() {
         return Stream.concat(getGrantedAuthorityStream(), Stream.of(toRoleGrantedAuthority()))

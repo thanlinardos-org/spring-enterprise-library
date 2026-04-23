@@ -3,7 +3,7 @@
 target
 project-db-files
 datadumps
-TODOS
+TODOS.md
 eazybankdev-realm-export.json
 **/*.env
 **/*.p12

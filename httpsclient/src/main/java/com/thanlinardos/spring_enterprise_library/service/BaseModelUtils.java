@@ -1,4 +1,4 @@
-package com.thanlinardos.resource_server.service;
+package com.thanlinardos.spring_enterprise_library.service;
 
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
@@ -8,9 +8,9 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class ModelUtils {
+public class BaseModelUtils {
 
-    private ModelUtils() {
+    private BaseModelUtils() {
     }
 
     /**

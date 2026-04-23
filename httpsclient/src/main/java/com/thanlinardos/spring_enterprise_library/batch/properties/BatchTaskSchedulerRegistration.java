@@ -1,4 +1,4 @@
-package com.thanlinardos.cloud_config_server.batch.properties;
+package com.thanlinardos.spring_enterprise_library.batch.properties;
 
 public record BatchTaskSchedulerRegistration<C extends BatchSchedulerConfig>(C config, Runnable runnable) {
 

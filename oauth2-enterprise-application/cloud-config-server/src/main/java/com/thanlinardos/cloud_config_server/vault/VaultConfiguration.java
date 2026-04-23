@@ -1,8 +1,8 @@
 package com.thanlinardos.cloud_config_server.vault;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thanlinardos.cloud_config_server.batch.properties.SchedulerExecutionProperties;
-import com.thanlinardos.cloud_config_server.batch.properties.TaskExecutionProperties;
+import com.thanlinardos.spring_enterprise_library.batch.properties.SchedulerExecutionProperties;
+import com.thanlinardos.spring_enterprise_library.batch.properties.TaskExecutionProperties;
 import com.thanlinardos.cloud_config_server.vault.properties.batch.VaultConnectionProperties;
 import com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncJobConfig;
 import com.thanlinardos.spring_enterprise_library.https.SecureHttpRequestFactory;

@@ -30,6 +30,4 @@ eureka:
   server:
     # Don't wait 5s for peer sync on startup — we're running standalone
     wait-time-in-ms-when-sync-empty: 0
-    # Speed up eviction of stale instances in dev
-    eviction-interval-timer-in-ms: 5000
   environment: prod

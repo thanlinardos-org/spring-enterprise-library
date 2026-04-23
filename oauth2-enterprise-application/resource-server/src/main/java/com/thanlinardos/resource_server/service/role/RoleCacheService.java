@@ -7,7 +7,7 @@ import com.thanlinardos.resource_server.model.mapped.AuthorityModel;
 import com.thanlinardos.resource_server.model.mapped.RoleModel;
 import com.thanlinardos.resource_server.repository.api.AuthorityRepository;
 import com.thanlinardos.resource_server.repository.api.RoleRepository;
-import com.thanlinardos.resource_server.service.ModelServiceHelper;
+import com.thanlinardos.spring_enterprise_library.service.ModelServiceHelper;
 import com.thanlinardos.spring_enterprise_library.objects.utils.CollectionUtils;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.Authority;
 import jakarta.annotation.Nullable;
@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 public class RoleCacheService {
 
     private final RoleRepository roleRepository;
@@ -39,7 +40,6 @@ public class RoleCacheService {
         this.roleAuthServiceHelper = new ModelServiceHelper<>(roleRepository, authorityRepository);
     }
 
-    @Transactional(readOnly = true)
     @Cacheable(value = "roles")
     public Collection<RoleModel> getAllRoles() {
         return roleRepository.findAll().stream()
@@ -47,7 +47,6 @@ public class RoleCacheService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     @Cacheable(value = "roles", key = "#name")
     @ExcludeFromLoggingAspect
     @Nullable
@@ -57,7 +56,6 @@ public class RoleCacheService {
                 .orElse(null);
     }
 
-    @Transactional(readOnly = true)
     @Cacheable(value = "authorities")
     public List<Authority> getAllAuthorities() {
         return authorityRepository.findAll().stream()

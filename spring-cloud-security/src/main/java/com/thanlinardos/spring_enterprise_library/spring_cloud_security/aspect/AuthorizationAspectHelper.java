@@ -1,9 +1,9 @@
 package com.thanlinardos.spring_enterprise_library.spring_cloud_security.aspect;
 
-import com.thanlinardos.spring_enterprise_library.spring_cloud_security.api.service.PrivilegedResourceService;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.PrivilegedResource;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.utils.AspectUtils;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.utils.AuthenticationUtils;
+import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -44,21 +44,21 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 public class AuthorizationAspectHelper {
 
     private static final String OWNER = "owner";
+    private static final String RESOURCE_ACCESS = "resource_access";
 
     /**
      * Authorizes a REST controller operation based on the provided proceeding join point and privileged resource service.
      *
      * @param proceedingJoinPoint       the proceeding join point representing the controller operation.
-     * @param privilegedResourceService the service used to check access to privileged resources.
      * @return the result of the controller operation, potentially filtered for authorized resources.
      * @throws Throwable if an error occurs during authorization or execution of the controller operation.
      */
-    public static Object authorizeControllerOperation(ProceedingJoinPoint proceedingJoinPoint, PrivilegedResourceService privilegedResourceService) throws Throwable {
+    public static Object authorizeControllerOperation(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         final String signature = proceedingJoinPoint.getSignature().toShortString();
-        boolean isModifyingOperation = authorizeModifyingOperation(proceedingJoinPoint, signature, privilegedResourceService);
+        boolean isModifyingOperation = authorizeModifyingOperation(proceedingJoinPoint, signature);
         Object result = proceedingJoinPoint.proceed();
         if (result instanceof ResponseEntity<?> responseEntity && responseEntity.getBody() != null) {
-            ResponseEntity<List<PrivilegedResource>> authorizedResources = authorizePrivilegedResponse(responseEntity, signature, privilegedResourceService);
+            ResponseEntity<List<PrivilegedResource>> authorizedResources = authorizePrivilegedResponse(responseEntity, signature);
             if (authorizedResources != null) {
                 return authorizedResources;
             } else if (isModifyingOperation) {
@@ -70,14 +70,14 @@ public class AuthorizationAspectHelper {
     }
 
     @Nullable
-    private static ResponseEntity<List<PrivilegedResource>> authorizePrivilegedResponse(ResponseEntity<?> responseEntity, String signature, PrivilegedResourceService privilegedResourceService) throws IllegalAccessException {
+    private static ResponseEntity<List<PrivilegedResource>> authorizePrivilegedResponse(ResponseEntity<?> responseEntity, String signature) throws IllegalAccessException {
         switch (responseEntity.getBody()) {
-            case PrivilegedResource resource when !privilegedResourceService.canCurrentPrincipalAccessResource(resource) ->
+            case PrivilegedResource resource when !canCurrentPrincipalAccessResource(resource) ->
                     throwIllegalAccessToResource(signature, resource);
-            case Optional<?> optional when optional.isPresent() && optional.get() instanceof PrivilegedResource resource && !privilegedResourceService.canCurrentPrincipalAccessResource(resource) ->
+            case Optional<?> optional when optional.isPresent() && optional.get() instanceof PrivilegedResource resource && !canCurrentPrincipalAccessResource(resource) ->
                     throwIllegalAccessToResource(signature, resource);
             case Collection<?> collection when collection.iterator().hasNext() && collection.iterator().next() instanceof PrivilegedResource -> {
-                return getResponseWithAuthorizedResources(responseEntity, signature, privilegedResourceService, collection);
+                return getResponseWithAuthorizedResources(responseEntity, signature, collection);
             }
             case PrivilegedResource resource ->
                     logAuthorizedResponse(signature, resource, responseEntity.getStatusCode(), getSimpleClassName(resource));
@@ -90,8 +90,8 @@ public class AuthorizationAspectHelper {
         return null;
     }
 
-    private static ResponseEntity<List<PrivilegedResource>> getResponseWithAuthorizedResources(ResponseEntity<?> responseEntity, String signature, PrivilegedResourceService privilegedResourceService, Collection<?> privilegedResources) {
-        List<PrivilegedResource> authorizedResources = filterPrivilegedResources(privilegedResources, privilegedResourceService);
+    private static ResponseEntity<List<PrivilegedResource>> getResponseWithAuthorizedResources(ResponseEntity<?> responseEntity, String signature, Collection<?> privilegedResources) {
+        List<PrivilegedResource> authorizedResources = filterPrivilegedResources(privilegedResources);
 
         log.info("[{}][{}] Authorization Filtering Collection of Resources: {} -> {}", responseEntity.getStatusCode(), signature, privilegedResources.size(), authorizedResources.size());
         log.debug("{} -> {}", getPrivilegedResourceNames(privilegedResources), getPrivilegedResourceNames(authorizedResources));
@@ -102,27 +102,20 @@ public class AuthorizationAspectHelper {
      * Authorizes a service method based on the provided proceeding join point and privileged resource service.
      *
      * @param proceedingJoinPoint       the proceeding join point representing the service method.
-     * @param privilegedResourceService the service used to check access to privileged resources.
      * @return the result of the service method, potentially filtered for authorized resources.
      * @throws Throwable if an error occurs during authorization or execution of the service method.
      */
-    public static Object authorizeServiceMethod(ProceedingJoinPoint proceedingJoinPoint, PrivilegedResourceService privilegedResourceService) throws Throwable {
+    public static Object authorizeServiceMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         final String signature = proceedingJoinPoint.getSignature().toShortString();
-        if (isTransactional(proceedingJoinPoint)) {
-            for (Object arg : proceedingJoinPoint.getArgs()) {
-                if (arg instanceof PrivilegedResource resource && !privilegedResourceService.canCurrentPrincipalAccessResource(resource)) {
-                    throwIllegalAccessToResource(signature, resource);
-                }
-            }
-        }
+        authorizeInputForTransactionalMethod(proceedingJoinPoint, signature);
         Object result = proceedingJoinPoint.proceed();
         switch (result) {
-            case PrivilegedResource resource when !privilegedResourceService.canCurrentPrincipalAccessResource(resource) ->
+            case PrivilegedResource resource when !canCurrentPrincipalAccessResource(resource) ->
                     throwIllegalAccessToResource(signature, resource);
-            case Optional<?> optional when optional.isPresent() && optional.get() instanceof PrivilegedResource resource && !privilegedResourceService.canCurrentPrincipalAccessResource(resource) ->
+            case Optional<?> optional when optional.isPresent() && optional.get() instanceof PrivilegedResource resource && !canCurrentPrincipalAccessResource(resource) ->
                     throwIllegalAccessToResource(signature, resource);
             case Collection<?> collection when collection.iterator().hasNext() && collection.iterator().next() instanceof PrivilegedResource -> {
-                return getAuthorizedResources(privilegedResourceService, collection, signature);
+                return getAuthorizedResources(collection, signature);
             }
             case PrivilegedResource resource ->
                     logAuthorizedResource(signature, getSimpleClassName(resource), resource);
@@ -136,8 +129,18 @@ public class AuthorizationAspectHelper {
         return result;
     }
 
-    private static List<PrivilegedResource> getAuthorizedResources(PrivilegedResourceService privilegedResourceService, Collection<?> collection, String signature) {
-        List<PrivilegedResource> authorizedResources = filterPrivilegedResources(collection, privilegedResourceService);
+    private static void authorizeInputForTransactionalMethod(ProceedingJoinPoint proceedingJoinPoint, String signature) throws IllegalAccessException {
+        if (isTransactional(proceedingJoinPoint)) {
+            for (Object arg : proceedingJoinPoint.getArgs()) {
+                if (arg instanceof PrivilegedResource resource && !canCurrentPrincipalAccessResource(resource)) {
+                    throwIllegalAccessToResource(signature, resource);
+                }
+            }
+        }
+    }
+
+    private static List<PrivilegedResource> getAuthorizedResources(Collection<?> collection, String signature) {
+        List<PrivilegedResource> authorizedResources = filterPrivilegedResources(collection);
 
         log.info("[{}] Authorization Filtering Collection of Resources: {} -> {}", signature, collection.size(), authorizedResources.size());
         log.debug("[{}] {} -> {}", signature, getPrivilegedResourceNames(collection), getPrivilegedResourceNames(authorizedResources));
@@ -164,21 +167,21 @@ public class AuthorizationAspectHelper {
                 .header("alg", "none")
                 .claim("sub", OWNER)
                 .claim("email", "owner@email.com")
-                .claim("resource_access", Map.of("account", OWNER, "eazybankapi", "client"))
+                .claim(RESOURCE_ACCESS, Map.of("account", OWNER, "eazybankapi", "client"))
                 .claim("client_id", "eazybankapi")
                 .build();
         Authentication authentication = new UsernamePasswordAuthenticationToken(ownerPrincipal, "pass", allAuthorities);
         getContext().setAuthentication(authentication);
     }
 
-    private static boolean authorizeModifyingOperation(ProceedingJoinPoint proceedingJoinPoint, String signature, PrivilegedResourceService privilegedResourceService) throws IllegalAccessException {
+    private static boolean authorizeModifyingOperation(ProceedingJoinPoint proceedingJoinPoint, String signature) throws IllegalAccessException {
         boolean isModifyingOperation = isModifyingOperation(proceedingJoinPoint);
         if (isModifyingOperation) {
             List<String> modifiedResourceTypes = new ArrayList<>();
             for (Object arg : proceedingJoinPoint.getArgs()) {
                 if (arg instanceof PrivilegedResource resource) {
                     modifiedResourceTypes.add(resource.getClass().getSimpleName());
-                    if (!privilegedResourceService.canCurrentPrincipalAccessResource(resource)) {
+                    if (!canCurrentPrincipalAccessResource(resource)) {
                         throwIllegalAccessToResource(signature, resource);
                     }
                 }
@@ -224,13 +227,12 @@ public class AuthorizationAspectHelper {
      * Filters a collection of privileged resources, returning only those that the current principal can access.
      *
      * @param collection                the collection of resources to filter.
-     * @param privilegedResourceService the service used to check access to privileged resources.
      * @return a list of privileged resources that the current principal can access.
      */
-    protected static List<PrivilegedResource> filterPrivilegedResources(Collection<?> collection, PrivilegedResourceService privilegedResourceService) {
+    protected static List<PrivilegedResource> filterPrivilegedResources(Collection<?> collection) {
         return collection.stream()
                 .map(PrivilegedResource.class::cast)
-                .filter(privilegedResourceService::canCurrentPrincipalAccessResource)
+                .filter(AuthorizationAspectHelper::canCurrentPrincipalAccessResource)
                 .toList();
     }
 
@@ -295,5 +297,49 @@ public class AuthorizationAspectHelper {
                 .map(PrivilegedResource.class::cast)
                 .map(PrivilegedResource::getPrincipalName)
                 .toList();
+    }
+
+    public static boolean canCurrentPrincipalAccessResource(PrivilegedResource resource) {
+        Authentication authentication = getContext().getAuthentication();
+        if (!validateOAuth2Authentication(authentication)) {
+            return false;
+        }
+        return canAccessResource(resource, authentication);
+    }
+
+    /**
+     * Check if the currently authenticated principal inside {@link Authentication} can access the resource.
+     * The principal can access the resource if the principal's privilege level is less than or equal to the resource's maximum privilege level
+     * and if one of these 2 conditions is true:
+     * - the principal's privilege level is less than the resource's privilege level.
+     * - the principal's privilege level is equal to the resource's privilege level and the principal is the owner of the resource.
+     *
+     * @param resource       - the resource to access
+     * @param authentication - the authentication to check
+     * @return true if the principal can access the resource, false otherwise
+     */
+    private static boolean canAccessResource(PrivilegedResource resource, Authentication authentication) {
+        if (resource == null) {
+            return false;
+        }
+        Integer privilegeLevel = PrivilegedResource.getPrivilegeLevelFromGrantedAuthorities(authentication.getAuthorities());
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return privilegeLevel <= resource.getMaxPrivilegeLevel()
+                && (privilegeLevel < resource.getPrivilegeLevel()
+                || (privilegeLevel.equals(resource.getPrivilegeLevel()) && resource.samePrivilegeLevelCheck(principal))
+        );
+    }
+
+    private static boolean validateOAuth2Authentication(Authentication authentication) {
+        return authentication != null
+                && authentication.getAuthorities() != null
+                && !authentication.getAuthorities().isEmpty()
+                && authentication.getAuthorities().stream().allMatch(Objects::nonNull)
+                && authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof Jwt jwt
+                && jwt.getClaims() != null
+                && jwt.getClaims().containsKey(RESOURCE_ACCESS)
+                && jwt.getClaims().get(RESOURCE_ACCESS) != null
+                && StringUtils.isNotBlank(jwt.getSubject());
     }
 }

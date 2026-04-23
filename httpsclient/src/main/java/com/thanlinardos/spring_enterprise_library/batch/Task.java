@@ -1,9 +1,9 @@
-package com.thanlinardos.cloud_config_server.batch;
+package com.thanlinardos.spring_enterprise_library.batch;
 
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
@@ -69,7 +69,7 @@ public class Task {
 
     /**
      * Check if the scheduled task is done.
-     * A task is done if it has been scheduled & it's {@link ScheduledFuture} is either completed or canceled.
+     * A task is done if it has been scheduled and it's {@link ScheduledFuture} is either completed or canceled.
      *
      * @return true if the task is done, false otherwise.
      */

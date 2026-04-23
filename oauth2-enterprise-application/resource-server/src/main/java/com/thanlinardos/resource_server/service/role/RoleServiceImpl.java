@@ -1,5 +1,6 @@
 package com.thanlinardos.resource_server.service.role;
 
+import com.thanlinardos.resource_server.misc.utils.RoleUtils;
 import com.thanlinardos.resource_server.model.constants.SecurityConstants;
 import com.thanlinardos.resource_server.model.info.AuthorityInfo;
 import com.thanlinardos.resource_server.model.info.RoleInfo;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 import static com.thanlinardos.spring_enterprise_library.objects.utils.FunctionUtils.stream;
 import static com.thanlinardos.spring_enterprise_library.objects.utils.PredicateUtils.isContainedIn;
+import static com.thanlinardos.spring_enterprise_library.objects.utils.PredicateUtils.selfContains;
 
 @Service
 @RequiredArgsConstructor
@@ -58,10 +60,10 @@ public class RoleServiceImpl implements OauthRoleService {
     }
 
     @Override
-    public Set<RoleModel> getRolesIncludingHigherPrivilegeLvlRoles(Collection<String> names) {
+    public Set<RoleModel> getRolesIncludingLowerPrivilegeLvlRoles(Collection<String> names) {
         Set<RoleModel> roles = new HashSet<>(findRoles(names));
-        Integer privilegeLvl = getMinPrivilegeLvl(roles);
-        roles.addAll(findRolesWithHigherPrivilegeLvl(privilegeLvl));
+        Integer privilegeLvl = RoleUtils.getPrivilegeLevelFromRoles(roles);
+        roles.addAll(findRolesWithLowerPrivilegeLvl(privilegeLvl));
         return roles;
     }
 
@@ -89,7 +91,7 @@ public class RoleServiceImpl implements OauthRoleService {
     @Transactional
     public AuthorityModel createAuthorityWithRoles(AuthorityInfo authorityInfo, boolean unlinkFromOtherRoles) {
         AuthorityModel model = roleCacheService.saveAuthority(AuthorityModel.fromAuthorityInfo(authorityInfo));
-        Set<RoleModel> newRoles = getRolesIncludingHigherPrivilegeLvlRoles(authorityInfo.roles());
+        Set<RoleModel> newRoles = getRolesIncludingLowerPrivilegeLvlRoles(authorityInfo.roles());
         return roleCacheService.createAuthorityWithRoles(
                 model,
                 getExistingRolesWithAuthority(model),
@@ -115,7 +117,7 @@ public class RoleServiceImpl implements OauthRoleService {
 
     private Set<RoleModel> getExistingRolesWithAuthority(AuthorityModel m) {
         return getAllRoles().stream()
-                .filter(role -> role.getAuthorities().contains(m))
+                .filter(selfContains(m, RoleModel::getAuthorities))
                 .collect(Collectors.toSet());
     }
 
@@ -130,16 +132,9 @@ public class RoleServiceImpl implements OauthRoleService {
                 .filter(role -> shouldValidateRoles || Objects.nonNull(role));
     }
 
-    private Set<RoleModel> findRolesWithHigherPrivilegeLvl(int privilegeLvl) {
+    private Set<RoleModel> findRolesWithLowerPrivilegeLvl(int privilegeLvl) {
         return getAllRoles().stream()
-                .filter(role -> role.getPrivilegeLvl() > privilegeLvl)
+                .filter(role -> role.getPrivilegeLvl() < privilegeLvl)
                 .collect(Collectors.toSet());
-    }
-
-    private Integer getMinPrivilegeLvl(Set<RoleModel> roles) {
-        return roles.stream()
-                .map(RoleModel::getPrivilegeLvl)
-                .min(Integer::compareTo)
-                .orElse(Integer.MAX_VALUE);
     }
 }

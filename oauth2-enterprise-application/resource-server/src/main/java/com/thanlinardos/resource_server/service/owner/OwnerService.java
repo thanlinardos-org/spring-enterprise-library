@@ -1,5 +1,6 @@
 package com.thanlinardos.resource_server.service.owner;
 
+import com.thanlinardos.resource_server.misc.utils.RoleUtils;
 import com.thanlinardos.resource_server.model.constants.SecurityConstants;
 import com.thanlinardos.resource_server.model.entity.owner.OwnerJpa;
 import com.thanlinardos.resource_server.model.entity.role.RoleJpa;
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,7 +51,7 @@ public class OwnerService {
         OwnerJpa entity = owner.toEntity();
         List<RoleJpa> defaultGuestRoles = findDefaultGuestRoles();
         entity.setRoles(defaultGuestRoles);
-        entity.setPrivilegeLevel(getDefaultGuestPrivilegeLvl(defaultGuestRoles));
+        entity.setPrivilegeLevel(RoleUtils.getPrivilegeLevelFromRoleJpas(defaultGuestRoles));
         return saveOwner(owner, entity);
     }
 
@@ -75,13 +75,6 @@ public class OwnerService {
         entity = ownerRepository.save(entity);
         owner.setId(entity.getId());
         return owner;
-    }
-
-    private @Nonnull Integer getDefaultGuestPrivilegeLvl(List<RoleJpa> defaultGuestRoles) {
-        return defaultGuestRoles.stream()
-                .map(RoleJpa::getPrivilegeLvl)
-                .min(Integer::compareTo)
-                .orElse(Integer.MAX_VALUE);
     }
 
     @Transactional

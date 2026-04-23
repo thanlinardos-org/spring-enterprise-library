@@ -1,8 +1,8 @@
 package com.thanlinardos.cloud_config_server.vault.properties.batch;
 
-import com.thanlinardos.cloud_config_server.batch.properties.BatchSchedulerConfig;
-import com.thanlinardos.cloud_config_server.batch.properties.SchedulerExecutionProperties;
-import com.thanlinardos.cloud_config_server.batch.properties.TaskExecutionProperties;
+import com.thanlinardos.spring_enterprise_library.batch.properties.BatchSchedulerConfig;
+import com.thanlinardos.spring_enterprise_library.batch.properties.SchedulerExecutionProperties;
+import com.thanlinardos.spring_enterprise_library.batch.properties.TaskExecutionProperties;
 import lombok.Getter;
 import org.springframework.web.client.RestTemplate;
 

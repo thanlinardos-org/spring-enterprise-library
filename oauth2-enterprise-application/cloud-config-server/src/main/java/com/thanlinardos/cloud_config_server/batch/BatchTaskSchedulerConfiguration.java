@@ -1,7 +1,7 @@
 package com.thanlinardos.cloud_config_server.batch;
 
-import com.thanlinardos.cloud_config_server.batch.properties.BatchSchedulerConfig;
-import com.thanlinardos.cloud_config_server.batch.properties.BatchTaskSchedulerRegistration;
+import com.thanlinardos.spring_enterprise_library.batch.properties.BatchSchedulerConfig;
+import com.thanlinardos.spring_enterprise_library.batch.properties.BatchTaskSchedulerRegistration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class BatchTaskSchedulerConfiguration {
 
     @Bean
     public <C extends BatchSchedulerConfig> Map<String, BatchTaskSchedulerRegistration<C>> registeredSchedulers(ApplicationContext context) {
-        return context.getBeansOfType(BatchTaskScheduler.class, false, true).values().stream()
-                .collect(Collectors.toMap(BatchTaskScheduler::getName, processor -> new BatchTaskSchedulerRegistration<>(((C) processor.getConfig()), processor::start)));
+        return context.getBeansOfType(com.thanlinardos.spring_enterprise_library.batch.BatchTaskScheduler.class, false, true).values().stream()
+                .collect(Collectors.toMap(com.thanlinardos.spring_enterprise_library.batch.BatchTaskScheduler::getName, processor -> new BatchTaskSchedulerRegistration<>(((C) processor.getConfig()), processor::start)));
     }
 }

@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface OauthRoleService extends RoleService<RoleModel> {
 
-    Set<RoleModel> getRolesIncludingHigherPrivilegeLvlRoles(Collection<String> names);
+    Set<RoleModel> getRolesIncludingLowerPrivilegeLvlRoles(Collection<String> names);
 
     @Override
     Set<RoleModel> findRolesWithoutValidation(Collection<String> names);

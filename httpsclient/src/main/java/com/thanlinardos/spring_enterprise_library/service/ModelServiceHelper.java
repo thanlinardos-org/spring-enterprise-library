@@ -1,6 +1,7 @@
-package com.thanlinardos.resource_server.service;
+package com.thanlinardos.spring_enterprise_library.service;
 
 import com.thanlinardos.spring_enterprise_library.error.errorcodes.ErrorCode;
+import com.thanlinardos.spring_enterprise_library.error.exceptions.CoreException;
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
 import com.thanlinardos.spring_enterprise_library.repository.base.BasicIdJpaRepository;
@@ -24,7 +25,7 @@ public class ModelServiceHelper<T extends BasicIdJpa, M extends BasicIdModel<T, 
     @Transactional
     public M saveOrUpdateEntityFoundBy(M model, Supplier<Optional<T>> findEntityBy) {
         T entity = model.toEntity();
-        repository.saveOrUpdateFoundByProperty(entity, findEntityBy);
+        repository.saveFoundByProperty(entity, findEntityBy);
         model.setId(entity.getId());
         return model;
     }
@@ -32,7 +33,7 @@ public class ModelServiceHelper<T extends BasicIdJpa, M extends BasicIdModel<T, 
     @Transactional
     public N saveOrUpdateSubEntityFoundBy(N model, Supplier<Optional<S>> findEntityBy) {
         S entity = model.toEntity();
-        subRepository.saveOrUpdateFoundByProperty(entity, findEntityBy);
+        subRepository.saveFoundByProperty(entity, findEntityBy);
         model.setId(entity.getId());
         return model;
     }
@@ -50,14 +51,32 @@ public class ModelServiceHelper<T extends BasicIdJpa, M extends BasicIdModel<T, 
     @Transactional
     public M createWithLinks(M model, Collection<N> existingLinks, Set<N> newLinks, boolean unlinkOthers, Function<M, Optional<T>> findEntityBy, Function<T, Collection<S>> getRelations) {
         BiConsumer<M, Collection<N>> symmetricLinker = getSymmetricLinker(findEntityBy, getRelations);
-        return ModelUtils.createWithLinks(model, existingLinks, newLinks, unlinkOthers, symmetricLinker);
+        M saved = BaseModelUtils.createWithLinks(model, existingLinks, newLinks, unlinkOthers, symmetricLinker);
+        return refetchSavedModel(saved);
     }
 
     @Transactional
     public N createSubWithLinks(N model, Collection<M> existingLinks, Set<M> newLinks, boolean unlinkOthers, Function<M, Optional<T>> findEntityBy, Function<T, Collection<S>> getRelations) {
         BiConsumer<N, M> linker = getSubLinker(findEntityBy, getRelations);
         BiConsumer<N, M> unlinker = getSubUnlinker(findEntityBy, getRelations);
-        return ModelUtils.createSubWithLinks(model, existingLinks, newLinks, unlinkOthers, linker, unlinker);
+        N saved = BaseModelUtils.createSubWithLinks(model, existingLinks, newLinks, unlinkOthers, linker, unlinker);
+        return refetchSavedSubModel(saved);
+    }
+
+    private M refetchSavedModel(M m) {
+        return repository.findById(m.getId())
+                .map(m::fromEntity)
+                .orElseThrow(() -> throwEntityNotFound(m));
+    }
+
+    private N refetchSavedSubModel(N m) {
+        return subRepository.findById(m.getId())
+                .map(m::fromEntity)
+                .orElseThrow(() -> throwEntityNotFound(m));
+    }
+
+    private static <T extends BasicIdJpa, M extends BasicIdModel<T, M>> CoreException throwEntityNotFound(M m) {
+        return ErrorCode.NONE_FOUND.createCoreException("Entity of model {0} not found by id: {1}", new Object[]{m.getClass().getSimpleName(), m.getId()});
     }
 
     private BiConsumer<M, Collection<N>> getSymmetricLinker(Function<M, Optional<T>> findEntityBy, Function<T, Collection<S>> getRelations) {

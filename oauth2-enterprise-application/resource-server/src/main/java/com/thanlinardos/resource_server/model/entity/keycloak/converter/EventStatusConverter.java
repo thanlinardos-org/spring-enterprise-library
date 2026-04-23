@@ -1,10 +1,9 @@
 package com.thanlinardos.resource_server.model.entity.keycloak.converter;
 
 import com.thanlinardos.resource_server.batch.keycloak.event.EventStatusType;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-
-import javax.annotation.Nullable;
 
 @Converter(autoApply = true)
 public class EventStatusConverter implements AttributeConverter<EventStatusType, String> {
