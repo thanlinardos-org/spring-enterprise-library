@@ -1,4 +1,4 @@
-package com.thanlinardos.cloud_config_server.vault;
+package com.thanlinardos.spring_enterprise_library.integrations.vault;
 
 public class VaultIntegrationConstants {
 

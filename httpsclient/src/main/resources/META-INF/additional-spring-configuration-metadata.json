@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable/Disable the batch run timer.",
+      "sourceType": "com.thanlinardos.spring_enterprise_library.batch.properties.BatchRunTimerConfigProperties"
+    },
+    {
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.frequency-ms",
+      "type": "java.lang.Long",
+      "description": "The frequency in milliseconds at which the batch run timer triggers.",
+      "sourceType": "com.thanlinardos.spring_enterprise_library.batch.properties.BatchRunTimerConfigProperties"
+    },
+    {
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.initial-delay-ms",
+      "type": "java.lang.Long",
+      "description": "The initial delay in milliseconds before the batch run timer starts."
+    },
+    {
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.schedule-window-seconds",
+      "type": "java.lang.Long",
+      "description": "The schedule window in seconds for the batch run timer.",
+      "sourceType": "com.thanlinardos.spring_enterprise_library.batch.properties.BatchRunTimerConfigProperties"
+    }
+  ]
+}
+

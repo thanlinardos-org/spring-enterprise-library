@@ -6,7 +6,6 @@ import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicAuditab
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.PrivilegedResource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
@@ -14,7 +13,6 @@ import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
 @SuperBuilder
 public class ClientModel extends BasicAuditableModel<ClientJpa> implements Serializable, PrivilegedResource {
 

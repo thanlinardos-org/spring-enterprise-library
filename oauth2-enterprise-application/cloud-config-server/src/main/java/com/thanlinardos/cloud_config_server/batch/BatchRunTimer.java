@@ -3,6 +3,7 @@ package com.thanlinardos.cloud_config_server.batch;
 import com.thanlinardos.spring_enterprise_library.batch.BaseBatchRunTimer;
 import com.thanlinardos.spring_enterprise_library.batch.BatchTaskScheduler;
 import com.thanlinardos.spring_enterprise_library.batch.Task;
+import com.thanlinardos.spring_enterprise_library.batch.properties.BatchSchedulerConfig;
 import com.thanlinardos.spring_enterprise_library.batch.properties.BatchTaskSchedulerRegistration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,12 +25,12 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Component
 @Slf4j
-@ConditionalOnProperty(value = {"batch.run-timer.enabled"}, havingValue = "true")
-public final class BatchRunTimer extends BaseBatchRunTimer {
+@ConditionalOnProperty(value = {"thanlinardos.springenterpriselibrary.batch.run-timer.enabled"}, havingValue = "true")
+public final class BatchRunTimer<C extends BatchSchedulerConfig> extends BaseBatchRunTimer<C> {
 
     private static final ConcurrentMap<String, Task> BATCH_RUNS = new ConcurrentHashMap<>();
 
-    public BatchRunTimer(ThreadPoolTaskScheduler taskScheduler, Map<String, BatchTaskSchedulerRegistration<?>> registeredSchedulers, @Value("${batch.run-timer.schedule-window-seconds}") long schedulingWindowSeconds) {
+    public BatchRunTimer(ThreadPoolTaskScheduler taskScheduler, Map<String, BatchTaskSchedulerRegistration<C>> registeredSchedulers, @Value("${thanlinardos.springenterpriselibrary.batch.run-timer.schedule-window-seconds}") long schedulingWindowSeconds) {
         super(taskScheduler, registeredSchedulers, schedulingWindowSeconds);
         initRuns(BATCH_RUNS);
     }
@@ -38,7 +39,7 @@ public final class BatchRunTimer extends BaseBatchRunTimer {
         return BATCH_RUNS;
     }
 
-    @Scheduled(fixedDelayString = "${batch.run-timer.frequency-ms}", initialDelayString = "${batch.run-timer.initial-delay-ms}")
+    @Scheduled(fixedDelayString = "${thanlinardos.springenterpriselibrary.batch.run-timer.frequency-ms}", initialDelayString = "${thanlinardos.springenterpriselibrary.batch.run-timer.initial-delay-ms}")
     public void scheduleRuns() {
         scheduleRuns(BATCH_RUNS);
     }

@@ -29,9 +29,6 @@ public abstract class BasicAuditableModel<T extends BasicIdJpa> extends BasicIdM
     @EqualsAndHashCode.Exclude
     private String updatedBy;
 
-    protected BasicAuditableModel() {
-    }
-
     protected BasicAuditableModel(BasicAuditableJpa entity) {
         super(entity);
         setCreatedAt(entity.getCreatedAt());

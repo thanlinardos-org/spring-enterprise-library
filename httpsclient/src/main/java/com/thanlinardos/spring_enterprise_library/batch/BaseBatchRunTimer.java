@@ -1,5 +1,6 @@
 package com.thanlinardos.spring_enterprise_library.batch;
 
+import com.thanlinardos.spring_enterprise_library.batch.properties.BatchSchedulerConfig;
 import com.thanlinardos.spring_enterprise_library.batch.properties.BatchTaskSchedulerRegistration;
 import com.thanlinardos.spring_enterprise_library.time.TimeFactory;
 import com.thanlinardos.spring_enterprise_library.time.model.InstantInterval;
@@ -19,10 +20,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Getter
-public abstract class BaseBatchRunTimer {
+public abstract class BaseBatchRunTimer<C extends BatchSchedulerConfig> {
 
     private final ThreadPoolTaskScheduler taskScheduler;
-    private final Map<String, BatchTaskSchedulerRegistration<?>> registeredSchedulers;
+    private final Map<String, BatchTaskSchedulerRegistration<C>> registeredSchedulers;
     private final long schedulingWindowSeconds;
 
     protected void initRuns(ConcurrentMap<String, Task> batchRuns) {

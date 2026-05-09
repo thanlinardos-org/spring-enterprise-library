@@ -40,7 +40,7 @@ public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
      * 1. Clean up hanging tasks that are done or cancelled.
      * 2. Execute the main logic of the task scheduler.
      * 3. If the execution is successful, schedule the next run based on the returned delay.
-     * 4. If the execution fails, log the error, forcefully stop all tasks & schedule a retry attempt with exponential backoff.
+     * 4. If the execution fails, log the error, forcefully stop all tasks and schedule a retry attempt with exponential backoff.
      */
     public void start() {
         long start = System.currentTimeMillis();
@@ -143,7 +143,7 @@ public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
 
     /**
      * Removes tasks that are finished from the scheduled tasks map and logs the number of cleaned up tasks.
-     * All completed, canceled & failed tasks are removed.
+     * All completed, canceled and failed tasks are removed.
      * It is called before scheduling a new task to ensure that the map only contains active tasks.
      */
     private void cleanUpFinishedTasks() {

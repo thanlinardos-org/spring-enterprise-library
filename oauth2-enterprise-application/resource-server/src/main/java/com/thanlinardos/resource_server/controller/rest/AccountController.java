@@ -25,7 +25,7 @@ public class AccountController {
     @GetMapping("/myAccount")
     public ResponseEntity<AccountModel> getAccountDetails(@RequestParam String email) {
         AccountModel account = accountService.getAccountByCustomerEmail(email).orElse(null);
-        return RestControllerUtils.getOkResponseWithBodyOrNotFound(account);
+        return RestControllerUtils.okWithBodyOrNotFound(account);
     }
 
     @PostMapping("/createAccount")
@@ -37,6 +37,6 @@ public class AccountController {
     @GetMapping("/account/{accountNumber}")
     public ResponseEntity<AccountModel> getAccountByAccountNumber(@PathVariable long accountNumber) {
         AccountModel account = accountService.getAccountByAccountNumber(accountNumber).orElse(null);
-        return RestControllerUtils.getOkResponseWithBodyOrNotFound(account);
+        return RestControllerUtils.okWithBodyOrNotFound(account);
     }
 }

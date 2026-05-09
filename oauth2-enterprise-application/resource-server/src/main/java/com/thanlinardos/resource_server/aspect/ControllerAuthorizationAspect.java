@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Order(1)
 @Slf4j
 @RequiredArgsConstructor
-@Profile("controller_authorization")
+@ConditionalOnProperty(name = "thanlinardos.resource-server.authorization-mode", havingValue = "controller")
 public class ControllerAuthorizationAspect {
 
     @Around("com.thanlinardos.resource_server.aspect.PointCutDefinitions.forControllerPackage()")

@@ -79,7 +79,7 @@ public class Task {
 
     /**
      * Check if the scheduled task is canceled.
-     * A task is canceled if it has been scheduled & it's {@link ScheduledFuture} is canceled.
+     * A task is canceled if it has been scheduled, and it's {@link ScheduledFuture} is canceled.
      *
      * @return true if the task is canceled, false otherwise.
      */

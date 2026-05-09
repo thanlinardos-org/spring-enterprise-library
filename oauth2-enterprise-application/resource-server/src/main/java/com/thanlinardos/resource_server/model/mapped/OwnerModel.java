@@ -29,9 +29,9 @@ import java.util.UUID;
 public class OwnerModel extends BasicAuditableModel<OwnerJpa> implements Serializable, PrivilegedResource {
 
     private final UUID uuid;
-    private String principalName;
-    private OwnerType type;
-    private int privilegeLevel;
+    private final String principalName;
+    private final OwnerType type;
+    private final int privilegeLevel;
     @Builder.Default
     private Set<RoleModel> roles = new HashSet<>();
     @Nullable

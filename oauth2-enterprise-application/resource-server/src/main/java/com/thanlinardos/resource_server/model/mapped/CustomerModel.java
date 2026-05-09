@@ -7,7 +7,6 @@ import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.ba
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
@@ -15,7 +14,6 @@ import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
 @SuperBuilder
 public class CustomerModel extends BasicAuditableModel<CustomerJpa> implements Serializable, PrivilegedResource {
 

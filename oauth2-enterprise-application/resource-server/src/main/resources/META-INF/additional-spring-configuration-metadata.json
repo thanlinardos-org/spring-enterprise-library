@@ -1,6 +1,11 @@
 {
   "properties": [
     {
+      "name": "thanlinardos.resource-server.authorization-mode",
+      "type": "java.lang.String",
+      "description": "Activates the authorization aspect for the specified layer. 'controller' enables ControllerAuthorizationAspect; 'service' enables ServiceAuthorizationAspect. Omit or leave blank to disable both."
+    },
+    {
       "name": "scheduling.enabled",
       "type": "java.lang.String",
       "description": "Enable/Disable scheduled tasks."

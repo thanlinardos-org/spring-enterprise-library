@@ -44,11 +44,6 @@ spring:
       thread-name-prefix: BatchJob-
       pool.size: 10
 batch:
-  run-timer:
-    enabled: true
-    frequency-ms: 5000
-    initial-delay-ms: 5000
-    schedule-window-seconds: 2000
   vault-sync:
     backoff-step-size: 60
     max-delay: 3600
@@ -58,6 +53,12 @@ batch:
     run-on-startup: true
 thanlinardos:
     springenterpriselibrary:
+      batch:
+        run-timer:
+          enabled: true
+          frequency-ms: 5000
+          initial-delay-ms: 5000
+          schedule-window-seconds: 2000
       secrets:
         refresh:
           displayValues: false

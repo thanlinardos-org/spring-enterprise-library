@@ -10,7 +10,7 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RestControllerUtils {
 
-    public static <T> ResponseEntity<T> getOkResponseWithBodyOrNotFound(@Nullable T bodyOrNull) {
+    public static <T> ResponseEntity<T> okWithBodyOrNotFound(@Nullable T bodyOrNull) {
         return Optional.ofNullable(bodyOrNull)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

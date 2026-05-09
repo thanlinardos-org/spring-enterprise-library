@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import com.thanlinardos.cloud_config_server.batch.BatchRunTimer;
-import com.thanlinardos.spring_enterprise_library.batch.BatchTaskScheduler;
-import com.thanlinardos.spring_enterprise_library.batch.Task;
 import com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncJobConfig;
 import com.thanlinardos.cloud_config_server.vault.properties.update.credentials.ApplicationEnvironmentProperties;
 import com.thanlinardos.cloud_config_server.vault.properties.update.credentials.ApplicationVaultProperties;
 import com.thanlinardos.cloud_config_server.vault.properties.update.credentials.VaultUpdateCredentialsProperties;
+import com.thanlinardos.spring_enterprise_library.batch.BatchTaskScheduler;
+import com.thanlinardos.spring_enterprise_library.batch.Task;
+import com.thanlinardos.spring_enterprise_library.error.errorcodes.ErrorCode;
+import com.thanlinardos.spring_enterprise_library.integrations.vault.VaultIntegrationHelper;
 import com.thanlinardos.spring_enterprise_library.time.TimeFactory;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -31,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @Slf4j
 public class VaultSyncJob extends BatchTaskScheduler<VaultSyncJobConfig> {
@@ -91,14 +94,21 @@ public class VaultSyncJob extends BatchTaskScheduler<VaultSyncJobConfig> {
     }
 
     private Instant getNextRunTime(VaultUpdateCredentialsProperties properties) {
-        Instant nextUpdateConfigsInstant = properties.getNextUpdateConfigsInstant(TimeFactory.getInstant());
-        Instant minTaskRunTime = getScheduledTasks().values().stream()
+        return Stream.concat(getUnScheduledTaskRunTimeStream(), Stream.of(getNextUpdateConfigsInstant(properties)))
+                .min(Instant::compareTo)
+                .orElseThrow(() -> ErrorCode.NONE_FOUND.createCoreException("Next run time not found"));
+    }
+
+    @Nonnull
+    private Instant getNextUpdateConfigsInstant(VaultUpdateCredentialsProperties properties) {
+        return TimeFactory.getInstant().plusSeconds(properties.updateConfigsInterval());
+    }
+
+    private Stream<Instant> getUnScheduledTaskRunTimeStream() {
+        return getScheduledTasks().values().stream()
                 .filter(Predicate.not(Task::isScheduled))
                 .map(Task::getRunTime)
-                .filter(Objects::nonNull)
-                .min(Instant::compareTo)
-                .orElse(nextUpdateConfigsInstant);
-        return nextUpdateConfigsInstant.isBefore(minTaskRunTime) ? nextUpdateConfigsInstant : minTaskRunTime;
+                .filter(Objects::nonNull);
     }
 
     private void markTasksForRemoval(VaultUpdateCredentialsProperties properties) {

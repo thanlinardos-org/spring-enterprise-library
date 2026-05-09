@@ -1,4 +1,4 @@
-package com.thanlinardos.cloud_config_server.vault;
+package com.thanlinardos.spring_enterprise_library.integrations.vault;
 
 import jakarta.annotation.Nullable;
 import org.springframework.http.HttpEntity;
@@ -7,10 +7,10 @@ import org.springframework.http.MediaType;
 
 import java.util.Optional;
 
-import static com.thanlinardos.cloud_config_server.vault.VaultIntegrationConstants.KV_DATA_PATH;
-import static com.thanlinardos.cloud_config_server.vault.VaultIntegrationConstants.STR_SLASH_STR_FORMAT;
-import static com.thanlinardos.cloud_config_server.vault.VaultIntegrationConstants.TRIPLE_STR_SLASH_FORMAT;
-import static com.thanlinardos.cloud_config_server.vault.VaultIntegrationConstants.X_VAULT_TOKEN_HEADER;
+import static com.thanlinardos.spring_enterprise_library.integrations.vault.VaultIntegrationConstants.KV_DATA_PATH;
+import static com.thanlinardos.spring_enterprise_library.integrations.vault.VaultIntegrationConstants.STR_SLASH_STR_FORMAT;
+import static com.thanlinardos.spring_enterprise_library.integrations.vault.VaultIntegrationConstants.TRIPLE_STR_SLASH_FORMAT;
+import static com.thanlinardos.spring_enterprise_library.integrations.vault.VaultIntegrationConstants.X_VAULT_TOKEN_HEADER;
 
 public class VaultIntegrationHelper {
 

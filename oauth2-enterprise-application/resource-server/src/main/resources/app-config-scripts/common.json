@@ -27,5 +27,10 @@
     "jpa": {
       "open-in-view": false
     }
+  },
+  "thanlinardos": {
+    "resource-server": {
+      "authorization-mode": null
+    }
   }
 }

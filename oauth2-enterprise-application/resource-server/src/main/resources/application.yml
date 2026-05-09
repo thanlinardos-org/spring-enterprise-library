@@ -66,6 +66,8 @@ integration:
   test:
     enabled: false
 thanlinardos:
+    resource-server:
+      authorization-mode: controller  # set to 'controller' or 'service' to enable the respective authorization aspect
     springenterpriselibrary:
       secrets:
         refresh-interval-ms: 1800000

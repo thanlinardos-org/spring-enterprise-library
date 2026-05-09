@@ -9,7 +9,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -20,8 +19,8 @@ import java.util.List;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@Profile("service_authorization")
 @ConditionalOnProperty(value = "scheduling.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "thanlinardos.resource_server.authorization-mode", havingValue = "service")
 public class EventTaskServiceAuthAspect {
 
     private final OauthRoleService roleService;

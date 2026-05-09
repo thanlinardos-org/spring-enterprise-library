@@ -1,6 +1,12 @@
 # Example configuration for Spring Enterprise Library
 thanlinardos:
   springenterpriselibrary:
+    batch:
+      run-timer:
+        enabled: false
+        frequency-ms: 5000
+        initial-delay-ms: 5000
+        schedule-window-seconds: 60
     time:
       time-zone: UTC
       accuracy: MILLISECONDS

@@ -1,24 +1,63 @@
 {
   "properties": [
     {
-      "name": "batch.run-timer.enabled",
-      "type": "java.lang.String",
-      "description": "Enable/Disable the batch run timer."
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable/Disable the batch run timer.",
+      "sourceType": "com.thanlinardos.spring_enterprise_library.batch.properties.BatchRunTimerConfigProperties"
     },
     {
-      "name": "batch.run-timer.frequency-ms",
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.frequency-ms",
       "type": "java.lang.Long",
-      "description": "The frequency in milliseconds at which the batch run timer triggers."
+      "description": "The frequency in milliseconds at which the batch run timer triggers.",
+      "sourceType": "com.thanlinardos.spring_enterprise_library.batch.properties.BatchRunTimerConfigProperties"
     },
     {
-      "name": "batch.run-timer.initial-delay-ms",
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.initial-delay-ms",
       "type": "java.lang.Long",
       "description": "The initial delay in milliseconds before the batch run timer starts."
     },
     {
-      "name": "batch.run-timer.schedule-window-seconds",
+      "name": "thanlinardos.springenterpriselibrary.batch.run-timer.schedule-window-seconds",
       "type": "java.lang.Long",
-      "description": "The schedule window in seconds for the batch run timer."
+      "description": "The schedule window in seconds for the batch run timer.",
+      "sourceType": "com.thanlinardos.spring_enterprise_library.batch.properties.BatchRunTimerConfigProperties"
+    },
+    {
+      "name": "batch.vault-sync.backoff-step-size",
+      "type": "java.lang.Integer",
+      "description": "Seconds added per back-off step when a Vault sync task fails.",
+      "sourceType": "com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncConfigProperties"
+    },
+    {
+      "name": "batch.vault-sync.max-delay",
+      "type": "java.lang.Integer",
+      "description": "Maximum back-off delay in seconds for Vault sync retries.",
+      "sourceType": "com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncConfigProperties"
+    },
+    {
+      "name": "batch.vault-sync.max-task-retries",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of task-level retry attempts for the Vault sync job.",
+      "sourceType": "com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncConfigProperties"
+    },
+    {
+      "name": "batch.vault-sync.max-execution-attempts",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of scheduler execution attempts per cycle for the Vault sync job.",
+      "sourceType": "com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncConfigProperties"
+    },
+    {
+      "name": "batch.vault-sync.max-lease-expiry-percent",
+      "type": "java.lang.Integer",
+      "description": "Percentage of Vault lease duration after which a secret is proactively renewed (0–100).",
+      "sourceType": "com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncConfigProperties"
+    },
+    {
+      "name": "batch.vault-sync.run-on-startup",
+      "type": "java.lang.Boolean",
+      "description": "Whether to trigger an initial Vault sync run immediately on application startup.",
+      "sourceType": "com.thanlinardos.cloud_config_server.vault.properties.batch.VaultSyncConfigProperties"
     },
     {
       "name": "thanlinardos.springenterpriselibrary.oauth2.client-certificate-path-format",
