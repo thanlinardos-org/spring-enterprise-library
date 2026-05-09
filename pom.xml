@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.12</version>
+        <version>3.5.14</version>
         <relativePath/>
     </parent>
     <groupId>io.github.thanlinardos</groupId>
@@ -42,14 +42,14 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>[3.5.13,3.99.99)</spring-boot.version>
-        <spring-boot-plugin.version>3.5.13</spring-boot-plugin.version>
+        <spring-boot.version>[3.5.14,3.99.99)</spring-boot.version>
+        <spring-boot-plugin.version>3.5.14</spring-boot-plugin.version>
         <spring-cloud-config.version>[4.3.2,4.99.99)</spring-cloud-config.version>
         <keycloak-client-thanlinardos-fork.version>999.0.0-SNAPSHOT</keycloak-client-thanlinardos-fork.version>
         <jjwt.version>[0.13.0,)</jjwt.version>
         <jacoco.version>0.8.14</jacoco.version>
 
-<!--        sonarqube-->
+<!--        SonarQube-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
@@ -121,7 +121,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>6.2.16</version>
+                <version>6.2.18</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
@@ -360,7 +360,7 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
-                <version>2.25.3</version>
+                <version>2.26.0</version>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
@@ -493,7 +493,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>12.2.0</version>
+                        <version>12.2.2</version>
 
                         <configuration>
                             <mavenSettingsProxyId>https-p</mavenSettingsProxyId>
