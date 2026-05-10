@@ -1,16 +1,13 @@
 package com.thanlinardos.spring_enterprise_library.annotations;
 
-import com.thanlinardos.spring_enterprise_library.time.config.TimeConfig;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ExtendWith(MockitoExtension.class)
-@Import(TimeConfig.class)
+@ExtendWith({MockitoExtension.class, TimeFactoryExtension.class})
 public @interface CoreTest {
 }
