@@ -1,6 +1,6 @@
 package com.thanlinardos.spring_enterprise_library.model;
 
-import com.thanlinardos.spring_enterprise_library.annotations.SpringTest;
+import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
 import com.thanlinardos.spring_enterprise_library.time.model.Interval;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-@SpringTest
+@CoreTest
 class IntervalTest {
 
     private static final Interval YEAR_2000 = Interval.forIsoDates("2000-01-01", "2000-12-31");

@@ -13,7 +13,6 @@
         <version>1.0.2</version>
     </parent>
     <modules>
-        <module>authorization-server</module>
         <module>cloud-config-server</module>
         <module>discovery-server</module>
         <module>resource-server</module>

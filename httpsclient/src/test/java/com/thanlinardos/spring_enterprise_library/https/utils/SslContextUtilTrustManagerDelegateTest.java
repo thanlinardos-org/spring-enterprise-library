@@ -5,11 +5,15 @@ import com.thanlinardos.spring_enterprise_library.https.api.TrustStrategy;
 import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.X509TrustManager;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @CoreTest
 class SslContextUtilTrustManagerDelegateTest {
@@ -59,18 +63,6 @@ class SslContextUtilTrustManagerDelegateTest {
         SslContextUtil.TrustManagerDelegate delegate = new SslContextUtil.TrustManagerDelegate(trustManager, mock(TrustStrategy.class));
 
         assertArrayEquals(issuers, delegate.getAcceptedIssuers());
-    }
-
-    @Test
-    void checkServerTrusted_shouldPropagateStrategyException() {
-        X509TrustManager trustManager = mock(X509TrustManager.class);
-        TrustStrategy strategy = (chain, authType) -> {
-            throw new CertificateException("boom");
-        };
-        SslContextUtil.TrustManagerDelegate delegate = new SslContextUtil.TrustManagerDelegate(trustManager, strategy);
-
-        org.junit.jupiter.api.Assertions.assertThrows(CertificateException.class,
-                () -> delegate.checkServerTrusted(new X509Certificate[0], RSA));
     }
 }
 

@@ -1,6 +1,6 @@
 package com.thanlinardos.spring_enterprise_library.model;
 
-import com.thanlinardos.spring_enterprise_library.annotations.SpringTest;
+import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
 import com.thanlinardos.spring_enterprise_library.time.model.InstantInterval;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-@SpringTest
+@CoreTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InstantIntervalTest {
 
