@@ -7,7 +7,7 @@ import com.thanlinardos.spring_enterprise_library.time.model.InstantInterval;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Instant;
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Getter
 public abstract class BaseBatchRunTimer<C extends BatchSchedulerConfig> {
 
-    private final ThreadPoolTaskScheduler taskScheduler;
+    private final TaskScheduler taskScheduler;
     private final Map<String, BatchTaskSchedulerRegistration<C>> registeredSchedulers;
     private final long schedulingWindowSeconds;
 

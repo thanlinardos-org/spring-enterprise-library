@@ -1,5 +1,6 @@
 package com.thanlinardos.spring_enterprise_library.https;
 
+import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
 import com.thanlinardos.spring_enterprise_library.error.exceptions.CoreException;
 import com.thanlinardos.spring_enterprise_library.https.properties.KeyAndTrustStoreProperties;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@CoreTest
 class SecureHttpRequestFactoryTest {
 
     @Test

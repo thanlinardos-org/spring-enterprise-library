@@ -13,7 +13,6 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @CoreTest
 class SslContextUtilTrustManagerDelegateTest {
@@ -57,12 +56,37 @@ class SslContextUtilTrustManagerDelegateTest {
 
     @Test
     void getAcceptedIssuers_shouldReturnWrappedTrustManagerIssuers() {
-        X509TrustManager trustManager = mock(X509TrustManager.class);
+        X509TrustManager trustManager = new DummyX509TrustManager();
         X509Certificate[] issuers = new X509Certificate[0];
-        when(trustManager.getAcceptedIssuers()).thenReturn(issuers);
-        SslContextUtil.TrustManagerDelegate delegate = new SslContextUtil.TrustManagerDelegate(trustManager, mock(TrustStrategy.class));
+        SslContextUtil.TrustManagerDelegate delegate = new SslContextUtil.TrustManagerDelegate(trustManager, new DummyTrustStrategy());
 
         assertArrayEquals(issuers, delegate.getAcceptedIssuers());
+    }
+
+    private static class DummyX509TrustManager implements X509TrustManager {
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) {
+            // do nothing
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) {
+            // do nothing
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    }
+
+    private static class DummyTrustStrategy implements TrustStrategy {
+
+        @Override
+        public boolean isTrusted(X509Certificate[] chain, String authType) {
+            return true;
+        }
     }
 }
 

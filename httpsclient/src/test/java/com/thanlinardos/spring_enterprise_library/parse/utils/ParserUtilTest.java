@@ -1,18 +1,22 @@
 package com.thanlinardos.spring_enterprise_library.parse.utils;
 
 import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
+import org.jboss.resteasy.core.Headers;
+import org.jboss.resteasy.specimpl.BuiltResponse;
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CoreTest
 class ParserUtilTest {
@@ -78,8 +82,9 @@ class ParserUtilTest {
 
     @Test
     void getPathParameterFromLocationURI_shouldReturnLastSegment() {
-        Response response = mock(Response.class);
-        when(response.getLocation()).thenReturn(URI.create("https://api.local/items/abc-123"));
+        Headers<Object> metadata = new Headers<>();
+        metadata.add(HttpHeaders.LOCATION, "https://api.local/items/abc-123");
+        Response response = new BuiltResponse(0, metadata, null, null);
 
         assertEquals("abc-123", ParserUtil.getPathParameterFromLocationURI(response));
     }

@@ -1,8 +1,10 @@
 package com.thanlinardos.spring_enterprise_library.model;
 
 import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
+import com.thanlinardos.spring_enterprise_library.annotations.TimeFactoryExtension;
 import com.thanlinardos.spring_enterprise_library.time.model.Interval;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @CoreTest
+@ExtendWith({TimeFactoryExtension.class})
 class IntervalTest {
 
     private static final Interval YEAR_2000 = Interval.forIsoDates("2000-01-01", "2000-12-31");

@@ -1,13 +1,16 @@
 package com.thanlinardos.spring_enterprise_library.service;
 
 import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
+import com.thanlinardos.spring_enterprise_library.annotations.TimeFactoryExtension;
 import com.thanlinardos.spring_enterprise_library.error.exceptions.CoreException;
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
 import com.thanlinardos.spring_enterprise_library.repository.base.BasicIdJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @CoreTest
+@ExtendWith({MockitoExtension.class, TimeFactoryExtension.class})
 class ModelServiceHelperTest {
 
     @Mock

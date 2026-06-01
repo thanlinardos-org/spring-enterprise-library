@@ -1,35 +1,34 @@
 package com.thanlinardos.spring_enterprise_library.batch;
 
 import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
+import com.thanlinardos.spring_enterprise_library.annotations.TimeFactoryExtension;
 import com.thanlinardos.spring_enterprise_library.batch.properties.BatchRunTimerConfigProperties;
 import com.thanlinardos.spring_enterprise_library.batch.properties.BatchSchedulerConfig;
 import com.thanlinardos.spring_enterprise_library.batch.properties.api.BatchSyncProperties;
+import com.thanlinardos.spring_enterprise_library.stubs.StubScheduledFuture;
+import com.thanlinardos.spring_enterprise_library.stubs.StubTaskScheduler;
 import com.thanlinardos.spring_enterprise_library.time.TimeFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ScheduledFuture;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @CoreTest
+@ExtendWith(TimeFactoryExtension.class)
 class BatchTaskSchedulerTest {
 
     @Test
     void start_whenExecuteSucceeds_shouldRegisterNextRun() {
-        ThreadPoolTaskScheduler scheduler = mock(ThreadPoolTaskScheduler.class);
-        when(scheduler.schedule(any(Runnable.class), any(Instant.class))).thenReturn(mock(ScheduledFuture.class));
+        TaskScheduler scheduler = new StubTaskScheduler(new StubScheduledFuture());
 
         TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig("batch", 2, 2), TimeFactory.getInstant());
         taskScheduler.nextRun = TimeFactory.getInstant();
@@ -41,9 +40,8 @@ class BatchTaskSchedulerTest {
 
     @Test
     void start_whenExecuteFails_shouldCancelAndScheduleAttempt() {
-        ThreadPoolTaskScheduler scheduler = mock(ThreadPoolTaskScheduler.class);
-        ScheduledFuture<?> future = mock(ScheduledFuture.class);
-        when(scheduler.schedule(any(Runnable.class), any(Instant.class))).thenReturn(mock(ScheduledFuture.class));
+        TaskScheduler scheduler = new StubTaskScheduler(new StubScheduledFuture());
+        TrackingScheduledFuture future = new TrackingScheduledFuture(false);
 
         TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig("batch", 2, 2), TimeFactory.getInstant());
         taskScheduler.throwOnExecute = true;
@@ -51,17 +49,16 @@ class BatchTaskSchedulerTest {
 
         taskScheduler.start();
 
-        verify(future).cancel(true);
+        assertTrue(future.wasCancelCalled());
+        assertTrue(future.wasLastMayInterruptIfRunning());
         assertNotNull(taskScheduler.getBatchRuns().get("batch"));
     }
 
     @Test
     void retryAndCancelHelpers_shouldHandleTaskStates() {
-        ThreadPoolTaskScheduler scheduler = mock(ThreadPoolTaskScheduler.class);
-        ScheduledFuture<?> retryFuture = mock(ScheduledFuture.class);
-        ScheduledFuture<?> cancelFuture = mock(ScheduledFuture.class);
-        doAnswer(invocation -> retryFuture).when(scheduler).schedule(any(Runnable.class), any(Instant.class));
-        when(cancelFuture.cancel(false)).thenReturn(true);
+        StubScheduledFuture retryFuture = new StubScheduledFuture();
+        TaskScheduler scheduler = new StubTaskScheduler(retryFuture);
+        TrackingScheduledFuture cancelFuture = new TrackingScheduledFuture(true);
 
         TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig("batch", 1, 1), TimeFactory.getInstant());
         Task task = new Task("task-1", retryFuture, 0, TimeFactory.getInstant());
@@ -77,16 +74,43 @@ class BatchTaskSchedulerTest {
 
         taskScheduler.cancelMarkedTasks();
         assertFalse(taskScheduler.getScheduledTasks().containsKey("task-2"));
+        assertTrue(cancelFuture.wasCancelCalled());
+        assertFalse(cancelFuture.wasLastMayInterruptIfRunning());
         assertTrue(taskScheduler.isTaskNotScheduled("missing"));
+    }
+
+    private static final class TrackingScheduledFuture extends StubScheduledFuture {
+        private final boolean cancelResult;
+        private boolean cancelCalled;
+        private boolean lastMayInterruptIfRunning;
+
+        private TrackingScheduledFuture(boolean cancelResult) {
+            this.cancelResult = cancelResult;
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            this.cancelCalled = true;
+            this.lastMayInterruptIfRunning = mayInterruptIfRunning;
+            return cancelResult;
+        }
+
+        private boolean wasCancelCalled() {
+            return cancelCalled;
+        }
+
+        private boolean wasLastMayInterruptIfRunning() {
+            return lastMayInterruptIfRunning;
+        }
     }
 
     private static final class TestBatchTaskScheduler extends BatchTaskScheduler<TestConfig> {
         private final ConcurrentMap<String, Task> batchRuns = new ConcurrentHashMap<>();
-        private final Logger logger = mock(Logger.class);
+        private final Logger logger = LoggerFactory.getLogger(TestBatchTaskScheduler.class);
         private boolean throwOnExecute = false;
         private Instant nextRun;
 
-        private TestBatchTaskScheduler(ThreadPoolTaskScheduler taskScheduler, TestConfig config, Instant instant) {
+        private TestBatchTaskScheduler(TaskScheduler taskScheduler, TestConfig config, Instant instant) {
             super(taskScheduler, config);
             nextRun = instant;
         }

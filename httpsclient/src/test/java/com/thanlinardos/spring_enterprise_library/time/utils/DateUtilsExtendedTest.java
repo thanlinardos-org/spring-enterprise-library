@@ -1,16 +1,20 @@
 package com.thanlinardos.spring_enterprise_library.time.utils;
 
 import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
+import com.thanlinardos.spring_enterprise_library.annotations.TimeFactoryExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneOffset;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @CoreTest
+@ExtendWith({TimeFactoryExtension.class})
 class DateUtilsExtendedTest {
 
 

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public abstract class BatchTaskScheduler<C extends BatchSchedulerConfig> {
 
-    private final ThreadPoolTaskScheduler taskScheduler;
+    private final TaskScheduler taskScheduler;
     @Getter
     private final ConcurrentHashMap<String, Task> scheduledTasks = new ConcurrentHashMap<>();
     @Getter

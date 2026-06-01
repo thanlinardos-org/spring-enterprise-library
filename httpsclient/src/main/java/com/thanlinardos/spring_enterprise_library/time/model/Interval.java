@@ -14,11 +14,9 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -34,7 +32,8 @@ import static com.thanlinardos.spring_enterprise_library.time.utils.DateUtils.su
  * @param start the start date of the interval (nullable).
  * @param end   the end date of the interval (nullable).
  */
-public record Interval(@Nullable LocalDate start, @Nullable LocalDate end) implements Comparable<Interval>, DateTemporal {
+public record Interval(@Nullable LocalDate start,
+                       @Nullable LocalDate end) implements Comparable<Interval>, DateTemporal {
 
     /**
      * Constructs an Interval with the given start and end dates.
@@ -161,34 +160,35 @@ public record Interval(@Nullable LocalDate start, @Nullable LocalDate end) imple
         }
 
         // generate start dates from end dates, and vice versa, selecting only those that overlap with the given intervals, with start/end-specific sorting
-        List<LocalDate> startDates = getSortedDatesWithFunctionsPredicateAndComparator(intervals, Interval::start, i -> addDay(i.end()),
-                TimeConstants.NULL_AS_MIN_COMPARATOR, Interval::containsNullAsMin);
-        List<LocalDate> endDates = getSortedDatesWithFunctionsPredicateAndComparator(intervals, Interval::end, i -> subtractDay(i.start()),
-                TimeConstants.NULL_AS_MAX_COMPARATOR, Interval::containsNullAsMax);
+        List<LocalDate> startDates = getSortedStartDatesIncludingEndDatesPlusOne(intervals);
+        List<LocalDate> endDates = getSortedEndDatesIncludingStartDatesMinusOne(intervals);
 
         if (startDates.size() != endDates.size()) {
             throw new IllegalStateException(String.format("Unable to split collection of intervals: %s", intervals));
         }
 
-        List<Interval> splittedIntervals = new ArrayList<>();
+        List<Interval> splitIntervals = new ArrayList<>();
         for (int i = 0; i < startDates.size(); i++) {
-            splittedIntervals.add(new Interval(startDates.get(i), endDates.get(i)));
+            splitIntervals.add(new Interval(startDates.get(i), endDates.get(i)));
         }
-        return splittedIntervals;
+        return splitIntervals;
     }
 
-    private static List<LocalDate> getSortedDatesWithFunctionsPredicateAndComparator(Collection<Interval> intervals,
-                                                                                     Function<Interval, LocalDate> keepNull,
-                                                                                     Function<Interval, LocalDate> discardNull,
-                                                                                     Comparator<LocalDate> comparator,
-                                                                                     BiPredicate<Interval, LocalDate> predicate) {
+    private static List<LocalDate> getSortedStartDatesIncludingEndDatesPlusOne(Collection<Interval> intervals) {
         return intervals.stream()
-                .flatMap(interval -> Stream.concat(
-                        Stream.of(keepNull.apply(interval)),
-                        Stream.ofNullable(discardNull.apply(interval))))
-                .filter(date -> isAnyMatchForPredicateOnDate(intervals, predicate, date))
+                .flatMap(interval -> Stream.of(interval.start(), addDay(interval.end())))
+                .filter(date -> isAnyMatchForPredicateOnDate(intervals, Interval::containsNullAsMin, date))
                 .distinct()
-                .sorted(comparator)
+                .sorted(TimeConstants.NULL_AS_MIN_COMPARATOR)
+                .toList();
+    }
+
+    private static List<LocalDate> getSortedEndDatesIncludingStartDatesMinusOne(Collection<Interval> intervals) {
+        return intervals.stream()
+                .flatMap(interval -> Stream.of(interval.end(), subtractDay(interval.start())))
+                .filter(date -> isAnyMatchForPredicateOnDate(intervals, Interval::containsNullAsMax, date))
+                .distinct()
+                .sorted(TimeConstants.NULL_AS_MAX_COMPARATOR)
                 .toList();
     }
 

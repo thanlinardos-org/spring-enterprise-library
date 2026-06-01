@@ -10,6 +10,7 @@ import com.thanlinardos.resource_server.service.task.TaskRunService;
 import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.AdminEventRepresentation;
@@ -17,6 +18,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collection;
 import java.util.Set;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @CoreTest
+@ExtendWith({MockitoExtension.class})
 class KeycloakEventServiceTest {
 
     @Spy private final ObjectMapper objectMapper = new ObjectMapper();

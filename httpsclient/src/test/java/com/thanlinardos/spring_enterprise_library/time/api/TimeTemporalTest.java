@@ -1,8 +1,10 @@
 package com.thanlinardos.spring_enterprise_library.time.api;
 
 import com.thanlinardos.spring_enterprise_library.annotations.CoreTest;
+import com.thanlinardos.spring_enterprise_library.annotations.TimeFactoryExtension;
 import com.thanlinardos.spring_enterprise_library.time.model.TimeInterval;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CoreTest
+@ExtendWith({TimeFactoryExtension.class})
 class TimeTemporalTest {
 
 
