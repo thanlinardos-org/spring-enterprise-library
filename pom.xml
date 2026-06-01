@@ -75,6 +75,8 @@
         <sonar.test.inclusions>**/src/test/**/*</sonar.test.inclusions>
         <sonar.tests>src</sonar.tests>
         <dependency-check-maven.nvdApiKey>placeholder</dependency-check-maven.nvdApiKey>
+        <dependency-check-maven.ossIndexServerId>ossindex</dependency-check-maven.ossIndexServerId>
+        <dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors>true</dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors>
         <aws-java-sdk.version>1.12.797</aws-java-sdk.version>
     </properties>
     <packaging>pom</packaging>
@@ -504,6 +506,8 @@
                             <mavenSettingsProxyId>https-p</mavenSettingsProxyId>
                             <outputDirectory>${sonar.dependencyCheck.basePath}</outputDirectory>
                             <nvdApiKey>${dependency-check-maven.nvdApiKey}</nvdApiKey>
+                            <ossIndexServerId>${dependency-check-maven.ossIndexServerId}</ossIndexServerId>
+                            <ossIndexWarnOnlyOnRemoteErrors>${dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors}</ossIndexWarnOnlyOnRemoteErrors>
                             <nvdDatafeedUrl>https://dependency-check.github.io/DependencyCheck_Builder/nvd_cache
                             </nvdDatafeedUrl>
 

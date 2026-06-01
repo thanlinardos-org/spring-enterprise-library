@@ -328,6 +328,8 @@
                             <mavenSettingsProxyId>https-p</mavenSettingsProxyId>
                             <outputDirectory>${sonar.dependencyCheck.basePath}</outputDirectory>
                             <nvdApiKey>${dependency-check-maven.nvdApiKey}</nvdApiKey>
+                            <ossIndexServerId>${dependency-check-maven.ossIndexServerId}</ossIndexServerId>
+                            <ossIndexWarnOnlyOnRemoteErrors>${dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors}</ossIndexWarnOnlyOnRemoteErrors>
                             <nvdDatafeedUrl>https://dependency-check.github.io/DependencyCheck_Builder/nvd_cache
                             </nvdDatafeedUrl>
 
