@@ -24,11 +24,10 @@ public class TaskRunRepositoryImpl implements CustomTaskRunRepository {
     }
 
     @Override
-    public long updateTaskRunTime(TaskType taskName, long time) {
+    public void updateTaskRunTime(TaskType taskName, long time) {
         entityManager.createQuery("UPDATE TaskRunJpa tr SET tr.time = :time WHERE tr.name = :taskName")
                 .setParameter("time", DateUtils.getLocalDateTimeFromEpochMilli(time))
                 .setParameter("taskName", taskName.name())
                 .executeUpdate();
-        return time;
     }
 }

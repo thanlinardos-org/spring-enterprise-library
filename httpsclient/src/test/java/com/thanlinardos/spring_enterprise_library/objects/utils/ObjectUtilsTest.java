@@ -176,39 +176,39 @@ class ObjectUtilsTest {
     // getFirstNonNull tests
     private static Stream<Arguments> getFirstNonNullParams() {
         return Stream.of(
-                Arguments.of(new Supplier<?>[]{}, Optional.empty()),
-                Arguments.of(new Supplier<?>[]{() -> null}, Optional.empty()),
-                Arguments.of(new Supplier<?>[]{() -> null, () -> null}, Optional.empty()),
-                Arguments.of(new Supplier<?>[]{() -> "first"}, Optional.of("first")),
-                Arguments.of(new Supplier<?>[]{() -> null, () -> "second"}, Optional.of("second")),
-                Arguments.of(new Supplier<?>[]{() -> "first", () -> "second"}, Optional.of("first"))
+                Arguments.of(new Supplier<?>[]{}, null),
+                Arguments.of(new Supplier<?>[]{() -> null}, null),
+                Arguments.of(new Supplier<?>[]{() -> null, () -> null}, null),
+                Arguments.of(new Supplier<?>[]{() -> "first"}, "first"),
+                Arguments.of(new Supplier<?>[]{() -> null, () -> "second"}, "second"),
+                Arguments.of(new Supplier<?>[]{() -> "first", () -> "second"}, "first")
         );
     }
 
     @ParameterizedTest
     @MethodSource("getFirstNonNullParams")
-    void getFirstNonNull_variousSuppliers_returnsExpectedResult(Supplier<String>[] suppliers, Optional<String> expected) {
+    void getFirstNonNull_variousSuppliers_returnsExpectedResult(Supplier<String>[] suppliers, String expected) {
         Optional<String> result = ObjectUtils.getFirstNonNull(suppliers);
-        Assertions.assertEquals(expected, result);
+        Assertions.assertEquals(Optional.ofNullable(expected), result);
     }
 
     // getFirstPresent tests
     private static Stream<Arguments> getFirstPresentParams() {
         return Stream.of(
-                Arguments.of(new Supplier<?>[]{}, Optional.empty()),
-                Arguments.of(new Supplier<?>[]{Optional::empty}, Optional.empty()),
-                Arguments.of(new Supplier<?>[]{Optional::empty, Optional::empty}, Optional.empty()),
-                Arguments.of(new Supplier<?>[]{() -> Optional.of("first")}, Optional.of("first")),
-                Arguments.of(new Supplier<?>[]{Optional::empty, () -> Optional.of("second")}, Optional.of("second")),
-                Arguments.of(new Supplier<?>[]{() -> Optional.of("first"), () -> Optional.of("second")}, Optional.of("first"))
+                Arguments.of(new Supplier<?>[]{}, null),
+                Arguments.of(new Supplier<?>[]{Optional::empty}, null),
+                Arguments.of(new Supplier<?>[]{Optional::empty, Optional::empty}, null),
+                Arguments.of(new Supplier<?>[]{() -> Optional.of("first")}, "first"),
+                Arguments.of(new Supplier<?>[]{Optional::empty, () -> Optional.of("second")}, "second"),
+                Arguments.of(new Supplier<?>[]{() -> Optional.of("first"), () -> Optional.of("second")}, "first")
         );
     }
 
     @ParameterizedTest
     @MethodSource("getFirstPresentParams")
-    void getFirstPresent_variousSuppliers_returnsExpectedResult(Supplier<Optional<String>>[] suppliers, Optional<String> expected) {
+    void getFirstPresent_variousSuppliers_returnsExpectedResult(Supplier<Optional<String>>[] suppliers, String expected) {
         Optional<String> result = ObjectUtils.getFirstPresent(suppliers);
-        Assertions.assertEquals(expected, result);
+        Assertions.assertEquals(Optional.ofNullable(expected), result);
     }
 
     // getOrNull tests

@@ -1,6 +1,7 @@
 package com.thanlinardos.resource_server.batch.keycloak.event;
 
 import com.thanlinardos.resource_server.model.entity.keycloak.KeycloakAdminEventJpa;
+import com.thanlinardos.resource_server.model.info.TaskType;
 import com.thanlinardos.spring_enterprise_library.parse.utils.ParserUtil;
 import com.thanlinardos.spring_enterprise_library.time.utils.DateUtils;
 import jakarta.annotation.Nullable;
@@ -103,6 +104,11 @@ public class KeycloakAdminEventModel extends EventPlaceholder<KeycloakAdminEvent
                 .map(KeycloakRoleModel::toEntity)
                 .forEach(entity::addRoleWithLink);
         return entity;
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.KEYCLOAK_EVENT_TASK;
     }
 
     @Override

@@ -6,5 +6,5 @@ public interface CustomTaskRunRepository {
 
     long getTaskRunTime(TaskType taskName);
 
-    long updateTaskRunTime(TaskType taskName, long time);
+    void updateTaskRunTime(TaskType taskName, long time);
 }

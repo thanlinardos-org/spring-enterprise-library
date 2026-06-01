@@ -6,10 +6,12 @@ import com.thanlinardos.spring_enterprise_library.error.exceptions.CoreException
 import com.thanlinardos.spring_enterprise_library.model.entity.base.BasicIdJpa;
 import com.thanlinardos.spring_enterprise_library.model.mapped.base.BasicIdModel;
 import com.thanlinardos.spring_enterprise_library.repository.base.BasicIdJpaRepository;
+import jakarta.annotation.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collection;
@@ -51,23 +53,31 @@ class ModelServiceHelperTest {
     void saveOrUpdateMethods_shouldSetIdsFromSavedEntities() {
         ParentModel parentModel = new ParentModel(1L);
         SubModel subModel = new SubModel(2L);
+        long parentId = 10L;
+        long subId = 20L;
 
-        doAnswer(invocation -> {
-            ParentEntity entity = invocation.getArgument(0);
-            entity.setId(10L);
-            return null;
-        }).when(repository).saveFoundByProperty(any(), any());
-        doAnswer(invocation -> {
-            SubEntity entity = invocation.getArgument(0);
-            entity.setId(20L);
-            return null;
-        }).when(subRepository).saveFoundByProperty(any(), any());
+        doAnswer(i -> setParentEntityIdOnFirstArgument(i, parentId)).when(repository).saveFoundByProperty(any(), any());
+        doAnswer(i -> setSubEntityIdOnFirstArgument(i, subId)).when(subRepository).saveFoundByProperty(any(), any());
 
-        ParentModel savedParent = helper.saveOrUpdateEntityFoundBy(parentModel, Optional::<ParentEntity>empty);
-        SubModel savedSub = helper.saveOrUpdateSubEntityFoundBy(subModel, Optional::<SubEntity>empty);
+        ParentModel savedParent = helper.saveOrUpdateEntityFoundBy(parentModel, Optional::empty);
+        SubModel savedSub = helper.saveOrUpdateSubEntityFoundBy(subModel, Optional::empty);
 
-        assertEquals(10L, savedParent.getId());
-        assertEquals(20L, savedSub.getId());
+        assertEquals(parentId, savedParent.getId());
+        assertEquals(subId, savedSub.getId());
+    }
+
+    @Nullable
+    private Object setParentEntityIdOnFirstArgument(InvocationOnMock invocation, long id) {
+        ParentEntity entity = invocation.getArgument(0);
+        entity.setId(id);
+        return null;
+    }
+
+    @Nullable
+    private Object setSubEntityIdOnFirstArgument(InvocationOnMock invocation, long id) {
+        SubEntity entity = invocation.getArgument(0);
+        entity.setId(id);
+        return null;
     }
 
     @Test

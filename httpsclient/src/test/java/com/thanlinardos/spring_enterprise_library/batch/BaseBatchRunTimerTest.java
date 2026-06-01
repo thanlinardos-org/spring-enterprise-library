@@ -23,22 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(TimeFactoryExtension.class)
 class BaseBatchRunTimerTest {
 
+    private static final int SCHEDULING_WINDOW_SECONDS = 30;
+
     @Test
     void initAndScheduleRuns_shouldScheduleStartupAndWindowedTasks() {
         StubScheduledFuture future = new StubScheduledFuture();
         StubTaskScheduler scheduler = new StubTaskScheduler(future);
 
-        TestConfig startupConfig = new TestConfig("startup", true);
-        TestConfig normalConfig = new TestConfig("normal", false);
-
-        Map<String, BatchTaskSchedulerRegistration<TestConfig>> registrations = Map.of(
-                "startup", new BatchTaskSchedulerRegistration<>(startupConfig, () -> {
-                }),
-                "normal", new BatchTaskSchedulerRegistration<>(normalConfig, () -> {
-                })
-        );
-
-        TestBatchRunTimer timer = new TestBatchRunTimer(scheduler, registrations, 30);
+        TestBatchRunTimer timer = getTestBatchRunTimer(scheduler);
         ConcurrentHashMap<String, Task> runs = new ConcurrentHashMap<>();
 
         timer.initRuns(runs);
@@ -50,12 +42,25 @@ class BaseBatchRunTimerTest {
         assertTrue(scheduler.getScheduleCount() >= 2);
     }
 
+    private static TestBatchRunTimer getTestBatchRunTimer(StubTaskScheduler scheduler) {
+        TestConfig startupConfig = new TestConfig("startup", true);
+        TestConfig normalConfig = new TestConfig("normal", false);
+
+        Map<String, BatchTaskSchedulerRegistration<TestConfig>> registrations = Map.of(
+                "startup", new BatchTaskSchedulerRegistration<>(startupConfig, () -> {
+                }),
+                "normal", new BatchTaskSchedulerRegistration<>(normalConfig, () -> {
+                })
+        );
+
+        return new TestBatchRunTimer(scheduler, registrations);
+    }
+
     private static final class TestBatchRunTimer extends BaseBatchRunTimer<TestConfig> {
 
         private TestBatchRunTimer(TaskScheduler taskScheduler,
-                                  Map<String, BatchTaskSchedulerRegistration<TestConfig>> registeredSchedulers,
-                                  long schedulingWindowSeconds) {
-            super(taskScheduler, registeredSchedulers, schedulingWindowSeconds);
+                                  Map<String, BatchTaskSchedulerRegistration<TestConfig>> registeredSchedulers) {
+            super(taskScheduler, registeredSchedulers, SCHEDULING_WINDOW_SECONDS);
         }
     }
 
@@ -94,7 +99,7 @@ class BaseBatchRunTimerTest {
                           return runOnStartup;
                       }
                   },
-                    new BatchRunTimerConfigProperties(1000, 30));
+                    new BatchRunTimerConfigProperties(1000, SCHEDULING_WINDOW_SECONDS));
             this.name = name;
         }
 

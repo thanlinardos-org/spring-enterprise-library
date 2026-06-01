@@ -26,16 +26,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(TimeFactoryExtension.class)
 class BatchTaskSchedulerTest {
 
+    private static final String BATCH = "batch";
+
     @Test
     void start_whenExecuteSucceeds_shouldRegisterNextRun() {
         TaskScheduler scheduler = new StubTaskScheduler(new StubScheduledFuture());
 
-        TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig("batch", 2, 2), TimeFactory.getInstant());
+        TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig(2, 2), TimeFactory.getInstant());
         taskScheduler.nextRun = TimeFactory.getInstant();
 
         taskScheduler.start();
 
-        assertNotNull(taskScheduler.getBatchRuns().get("batch"));
+        assertNotNull(taskScheduler.getBatchRuns().get(BATCH));
     }
 
     @Test
@@ -43,7 +45,7 @@ class BatchTaskSchedulerTest {
         TaskScheduler scheduler = new StubTaskScheduler(new StubScheduledFuture());
         TrackingScheduledFuture future = new TrackingScheduledFuture(false);
 
-        TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig("batch", 2, 2), TimeFactory.getInstant());
+        TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig(2, 2), TimeFactory.getInstant());
         taskScheduler.throwOnExecute = true;
         taskScheduler.getScheduledTasks().put("x", new Task("x", future, 0, TimeFactory.getInstant()));
 
@@ -51,7 +53,7 @@ class BatchTaskSchedulerTest {
 
         assertTrue(future.wasCancelCalled());
         assertTrue(future.wasLastMayInterruptIfRunning());
-        assertNotNull(taskScheduler.getBatchRuns().get("batch"));
+        assertNotNull(taskScheduler.getBatchRuns().get(BATCH));
     }
 
     @Test
@@ -60,7 +62,7 @@ class BatchTaskSchedulerTest {
         TaskScheduler scheduler = new StubTaskScheduler(retryFuture);
         TrackingScheduledFuture cancelFuture = new TrackingScheduledFuture(true);
 
-        TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig("batch", 1, 1), TimeFactory.getInstant());
+        TestBatchTaskScheduler taskScheduler = new TestBatchTaskScheduler(scheduler, new TestConfig(1, 1), TimeFactory.getInstant());
         Task task = new Task("task-1", retryFuture, 0, TimeFactory.getInstant());
         taskScheduler.getScheduledTasks().put("task-1", task);
 
@@ -148,7 +150,7 @@ class BatchTaskSchedulerTest {
     private static final class TestConfig extends BatchSchedulerConfig {
         private final String name;
 
-        private TestConfig(String name, int maxTaskRetries, int maxExecutionAttempts) {
+        private TestConfig(int maxTaskRetries, int maxExecutionAttempts) {
             super(new BatchSyncProperties() {
                       @Override
                       public int backoffStepSize() { return 1; }
@@ -169,7 +171,7 @@ class BatchTaskSchedulerTest {
                       public boolean runOnStartup() { return false; }
                   },
                     new BatchRunTimerConfigProperties(5000, 30));
-            this.name = name;
+            this.name = BATCH;
         }
 
         @Override

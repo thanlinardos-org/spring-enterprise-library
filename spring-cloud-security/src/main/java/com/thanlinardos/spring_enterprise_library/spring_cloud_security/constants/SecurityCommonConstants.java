@@ -41,4 +41,9 @@ public class SecurityCommonConstants {
             "/customers",
             "/actuator/**"
     );
+
+    /**
+     * The maximum privilege level that can access the resource.
+     */
+    public static final Integer MAX_PRIVILEGE_LEVEL = Integer.MAX_VALUE;
 }

@@ -1,5 +1,6 @@
 package com.thanlinardos.spring_enterprise_library.spring_cloud_security.aspect;
 
+import com.thanlinardos.spring_enterprise_library.spring_cloud_security.constants.SecurityCommonConstants;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.PrivilegedResource;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.utils.AspectUtils;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.utils.AuthenticationUtils;
@@ -324,7 +325,7 @@ public class AuthorizationAspectHelper {
         }
         Integer privilegeLevel = PrivilegedResource.getPrivilegeLevelFromGrantedAuthorities(authentication.getAuthorities());
         Jwt principal = (Jwt) authentication.getPrincipal();
-        return privilegeLevel <= resource.getMaxPrivilegeLevel()
+        return privilegeLevel <= SecurityCommonConstants.MAX_PRIVILEGE_LEVEL
                 && (privilegeLevel < resource.getPrivilegeLevel()
                 || (privilegeLevel.equals(resource.getPrivilegeLevel()) && resource.samePrivilegeLevelCheck(principal))
         );

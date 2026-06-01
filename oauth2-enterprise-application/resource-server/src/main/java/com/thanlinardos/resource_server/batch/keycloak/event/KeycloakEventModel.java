@@ -2,6 +2,7 @@ package com.thanlinardos.resource_server.batch.keycloak.event;
 
 import com.thanlinardos.resource_server.model.entity.keycloak.KeycloakEventDetailsJpa;
 import com.thanlinardos.resource_server.model.entity.keycloak.KeycloakEventJpa;
+import com.thanlinardos.resource_server.model.info.TaskType;
 import com.thanlinardos.spring_enterprise_library.time.utils.DateUtils;
 import jakarta.annotation.Nullable;
 import lombok.EqualsAndHashCode;
@@ -70,6 +71,11 @@ public class KeycloakEventModel extends EventPlaceholder<KeycloakEventJpa> {
                 .map(KeycloakEventDetailsJpa::fromMap)
                 .forEach(entity::addDetailWithLink);
         return entity;
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.KEYCLOAK_EVENT_TASK;
     }
 
     @Override

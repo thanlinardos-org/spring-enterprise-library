@@ -3,12 +3,12 @@ package com.thanlinardos.resource_server.service.keycloak;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thanlinardos.resource_server.aspect.annotation.ExcludeFromLoggingAspect;
-import com.thanlinardos.resource_server.batch.keycloak.event.KeycloakAdminEventModel;
 import com.thanlinardos.resource_server.batch.keycloak.event.EventPlaceholder;
-import com.thanlinardos.resource_server.batch.keycloak.event.KeycloakEventModel;
 import com.thanlinardos.resource_server.batch.keycloak.event.EventStatusType;
-import com.thanlinardos.resource_server.batch.keycloak.event.ResourceIdType;
+import com.thanlinardos.resource_server.batch.keycloak.event.KeycloakAdminEventModel;
+import com.thanlinardos.resource_server.batch.keycloak.event.KeycloakEventModel;
 import com.thanlinardos.resource_server.batch.keycloak.event.KeycloakRoleModel;
+import com.thanlinardos.resource_server.batch.keycloak.event.ResourceIdType;
 import com.thanlinardos.resource_server.model.info.OwnerType;
 import com.thanlinardos.resource_server.model.info.TaskType;
 import com.thanlinardos.resource_server.model.mapped.OwnerModel;
@@ -331,11 +331,17 @@ public class KeycloakEventService {
     private void handleUserEvent(KeycloakAdminEventModel event) {
         UUID userId = event.getResourceId();
         switch (event.getOperationType()) {
-            case DELETE -> ownerService.delete(userId)
-                    .ifPresent(unused -> logAdminEvent(Level.INFO, event, "Deleted user", userId));
+            case DELETE -> handleOwnerDelete(event, userId, OwnerType.CUSTOMER);
             case CREATE -> handleOwnerCreation(event, userId, OwnerType.CUSTOMER);
             case UPDATE -> handleOwnerUpdate(event, userId, OwnerType.CUSTOMER);
             case ACTION -> handleUserAction(event);
+        }
+    }
+
+    private void handleOwnerDelete(KeycloakAdminEventModel event, UUID userId, OwnerType ownerType) {
+        boolean isDeleted = ownerService.deleteCascadeIfPresent(userId);
+        if (isDeleted) {
+            logAdminEvent(Level.INFO, event, "Deleted " + ownerType + " with uuid", userId);
         }
     }
 
@@ -363,8 +369,7 @@ public class KeycloakEventService {
     private void handleClientEvent(KeycloakAdminEventModel event) {
         UUID clientId = event.getResourceId();
         switch (event.getOperationType()) {
-            case DELETE -> ownerService.delete(clientId)
-                    .ifPresent(unused -> logAdminEvent(Level.INFO, event, "Deleted client", clientId));
+            case DELETE -> handleOwnerDelete(event, clientId, OwnerType.CLIENT);
             case CREATE -> handleOwnerCreation(event, clientId, OwnerType.CLIENT);
             case UPDATE -> handleOwnerUpdate(event, clientId, OwnerType.CLIENT);
             default -> logAdminEvent(Level.WARN, event, "Unhandled operation type", event.getOperationType());

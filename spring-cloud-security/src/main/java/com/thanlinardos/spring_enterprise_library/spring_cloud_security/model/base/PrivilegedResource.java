@@ -58,16 +58,6 @@ public interface PrivilegedResource {
     }
 
     /**
-     * The maximum privilege level that can access the resource.
-     *
-     * @return Integer value of the maximum privilege level that can access the resource.
-     */
-    @JsonIgnore
-    default Integer getMaxPrivilegeLevel() {
-        return Integer.MAX_VALUE;
-    }
-
-    /**
      * Calculates the privilege level from a list of roles.
      * The privilege level is determined by the minimum privilege level among the roles.
      *

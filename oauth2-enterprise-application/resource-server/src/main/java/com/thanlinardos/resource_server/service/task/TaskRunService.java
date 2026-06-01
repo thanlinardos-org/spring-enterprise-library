@@ -25,6 +25,7 @@ public class TaskRunService {
     @Transactional
     @CachePut(value = "taskRunTimes", key = "#taskName")
     public long updateTaskRunTime(TaskType taskName, long time) {
-        return taskRunRepository.updateTaskRunTime(taskName, time);
+        taskRunRepository.updateTaskRunTime(taskName, time);
+        return time;
     }
 }

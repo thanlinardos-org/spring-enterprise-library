@@ -62,9 +62,7 @@ public abstract class EventPlaceholder<T extends BasicIdJpa> extends BasicIdMode
     @Nullable
     public abstract UUID getResourceId();
 
-    public TaskType getTaskType() {
-        return TaskType.KEYCLOAK_EVENT_TASK;
-    }
+    public abstract TaskType getTaskType();
 
     /**
      * Checks if none of the given events match the resourceId of this {@link EventPlaceholder}, or if the resourceId is null.

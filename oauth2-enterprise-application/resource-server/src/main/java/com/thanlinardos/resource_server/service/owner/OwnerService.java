@@ -78,14 +78,14 @@ public class OwnerService {
     }
 
     @Transactional
-    public Optional<Integer> delete(UUID uuid) {
-        return ownerRepository.getFirstByUuid(uuid)
-                .map(this::deleteCascade);
-    }
-
-    private int deleteCascade(OwnerJpa ownerJpa) {
-        ownerRepository.deleteCascade(ownerJpa);
-        return 1;
+    public boolean deleteCascadeIfPresent(UUID uuid) {
+        Optional<OwnerJpa> owmer = ownerRepository.getFirstByUuid(uuid);
+        if (owmer.isPresent()) {
+            ownerRepository.deleteCascade(owmer.get());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private List<RoleJpa> findDefaultGuestRoles() {
