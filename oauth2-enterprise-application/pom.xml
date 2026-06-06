@@ -20,5 +20,6 @@
     <properties>
         <!-- Aggregator POM has no src/ dir, override to avoid sonar source-not-found warnings -->
         <sonar.sources>pom.xml</sonar.sources>
+        <spring-enterprise-library.version>1.0.2</spring-enterprise-library.version>
     </properties>
 </project>

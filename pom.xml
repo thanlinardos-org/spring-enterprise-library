@@ -78,6 +78,17 @@
         <dependency-check-maven.ossIndexServerId>ossindex</dependency-check-maven.ossIndexServerId>
         <dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors>true</dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors>
         <aws-java-sdk.version>1.12.797</aws-java-sdk.version>
+
+<!--        plugins-->
+        <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
+        <flyway-maven-plugin.version>10.15.0</flyway-maven-plugin.version>
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
+        <resteasy-core.version>6.2.15.Final</resteasy-core.version>
+        <mockito-core.version>5.20.0</mockito-core.version>
+        <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     </properties>
     <packaging>pom</packaging>
     <modules>
@@ -277,6 +288,11 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>1.9.24</version>
             </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>4.0.3</version>
+            </dependency>
 <!--            test-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -305,7 +321,13 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.20.0</version>
+                <version>${mockito-core.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-core</artifactId>
+                <version>${resteasy-core.version}</version>
                 <scope>test</scope>
             </dependency>
 <!--            avoid vulnerabilities-->
@@ -415,13 +437,13 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.18.0</version>
+                <version>${versions-maven-plugin.version}</version>
             </plugin>
             <!-- Pom -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.8</version>
+                <version>${maven-gpg-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -436,7 +458,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.9.0</version>
+                <version>${central-publishing-maven-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -446,7 +468,7 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>4.0.0.4121</version>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -500,7 +522,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>12.2.2</version>
+                        <version>${dependency-check-maven.version}</version>
 
                         <configuration>
                             <mavenSettingsProxyId>https-p</mavenSettingsProxyId>
@@ -537,7 +559,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.7</version>
+                        <version>${jacoco.version}</version>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>

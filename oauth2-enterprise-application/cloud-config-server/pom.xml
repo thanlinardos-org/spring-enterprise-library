@@ -12,10 +12,6 @@
     <name>cloud-config-server</name>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <parent-version>1.0.2</parent-version>
     </properties>
 
     <dependencies>
@@ -58,12 +54,12 @@
         <dependency>
             <groupId>io.github.thanlinardos</groupId>
             <artifactId>httpsclient</artifactId>
-            <version>${parent-version}</version>
+            <version>${spring-enterprise-library.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.thanlinardos</groupId>
             <artifactId>spring-cloud-security</artifactId>
-            <version>${parent-version}</version>
+            <version>${spring-enterprise-library.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
@@ -76,7 +72,7 @@
         <dependency>
             <groupId>io.github.thanlinardos</groupId>
             <artifactId>httpsclient</artifactId>
-            <version>${parent-version}</version>
+            <version>${spring-enterprise-library.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -91,7 +87,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <argLine>
                         -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
@@ -102,7 +98,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -111,7 +107,7 @@
                             <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <release>21</release>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
         </plugins>
