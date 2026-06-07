@@ -26,7 +26,7 @@ public class ParserUtil {
     public static Integer safeParseInteger(String str) {
         try {
             return Integer.parseInt(str);
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException _) {
             return null;
         }
     }
@@ -40,7 +40,7 @@ public class ParserUtil {
     public static Float safeParseFloat(String str) {
         try {
             return Float.parseFloat(str);
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException _) {
             return null;
         }
     }
@@ -54,7 +54,7 @@ public class ParserUtil {
     public static Double safeParseDouble(String str) {
         try {
             return Double.parseDouble(str);
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException _) {
             return null;
         }
     }
@@ -68,7 +68,7 @@ public class ParserUtil {
     public static OffsetDateTime safeParseOffsetDateTime(String str) {
         try {
             return OffsetDateTime.parse(str);
-        } catch (DateTimeParseException | NullPointerException e) {
+        } catch (DateTimeParseException | NullPointerException _) {
             return null;
         }
     }
@@ -82,7 +82,7 @@ public class ParserUtil {
     public static UUID safeParseUUID(String str) {
         try {
             return UUID.fromString(str);
-        } catch (IllegalArgumentException | NullPointerException e) {
+        } catch (IllegalArgumentException | NullPointerException _) {
             return null;
         }
     }
@@ -125,7 +125,7 @@ public class ParserUtil {
         }
         try {
             return UUID.fromString(o.toString());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException _) {
             return null;
         }
     }
@@ -142,7 +142,7 @@ public class ParserUtil {
         }
         try {
             return Optional.of(UUID.fromString(o.toString()));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException _) {
             return Optional.empty();
         }
     }
@@ -170,7 +170,7 @@ public class ParserUtil {
     public static Long safeParseLong(String str) {
         try {
             return Long.parseLong(str);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return null;
         }
     }

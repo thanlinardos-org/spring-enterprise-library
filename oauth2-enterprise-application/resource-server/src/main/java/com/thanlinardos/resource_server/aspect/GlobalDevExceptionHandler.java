@@ -25,11 +25,9 @@ public class GlobalDevExceptionHandler {
         }
 
         String method = null;
-        String uri = null;
         if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes) {
             HttpServletRequest request = attributes.getRequest();
             method = request.getMethod();
-            uri = request.getRequestURI();
         }
 
         ProblemDetails error = new ProblemDetails();
@@ -39,7 +37,7 @@ public class GlobalDevExceptionHandler {
         error.setTitle("[" + ex.getClass() + "] An unexpected internal server error occurred while processing the " + method + " request.");
         error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         error.setDetail(ex.getMessage());
-        error.setType(uri);
+        error.setType("about:blank");
 
         log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

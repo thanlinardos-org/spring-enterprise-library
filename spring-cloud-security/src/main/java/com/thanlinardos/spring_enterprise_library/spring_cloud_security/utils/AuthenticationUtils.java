@@ -25,10 +25,10 @@ public class AuthenticationUtils {
      */
     public static String getPrincipalNameFromAuthentication(Authentication authentication) {
         Jwt principal = (Jwt) authentication.getPrincipal();
-        return Optional.of(principal)
+        return Optional.ofNullable(principal)
                 .map(JwtClaimAccessor::getSubject)
-                .or(() -> Optional.ofNullable(principal.getClaimAsString("email")))
-                .or(() -> Optional.ofNullable(principal.getClaimAsString("client_id")))
+                .or(() -> Optional.ofNullable(principal != null ? principal.getClaimAsString("email") : null))
+                .or(() -> Optional.ofNullable(principal != null ? principal.getClaimAsString("client_id") : null))
                 .orElse(null);
     }
 }

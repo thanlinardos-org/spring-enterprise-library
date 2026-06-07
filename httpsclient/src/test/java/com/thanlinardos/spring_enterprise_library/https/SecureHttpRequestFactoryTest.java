@@ -47,7 +47,7 @@ class SecureHttpRequestFactoryTest {
         sslContext.init(null, null, null);
 
         TestSecureHttpRequestFactory factory = new TestSecureHttpRequestFactory(sslContext);
-        HttpURLConnection connection = (HttpURLConnection) new URI("http://example.com").toURL().openConnection(Proxy.NO_PROXY);
+        HttpURLConnection connection = (HttpURLConnection) new URI("https://example.com").toURL().openConnection(Proxy.NO_PROXY);
 
         assertDoesNotThrow(() -> factory.callPrepare(connection));
     }

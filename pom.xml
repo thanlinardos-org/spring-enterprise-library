@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.14</version>
+        <version>4.0.6</version>
         <relativePath/>
     </parent>
     <groupId>io.github.thanlinardos</groupId>
@@ -38,23 +38,28 @@
         <url>scm:git:git://github.com/thanlinardos/spring-enterprise-library/src</url>
     </scm>
     <properties>
-        <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>[3.5.14,3.99.99)</spring-boot.version>
-        <spring-boot-plugin.version>3.5.14</spring-boot-plugin.version>
-        <spring-cloud-config.version>[4.3.2,4.99.99)</spring-cloud-config.version>
+        <spring-boot.version>4.0.6</spring-boot.version>
+        <spring-boot-plugin.version>4.0.6</spring-boot-plugin.version>
+        <spring-cloud-config.version>5.0.1</spring-cloud-config.version>
+        <spring-cloud-starter-config.version>5.0.3</spring-cloud-starter-config.version>
+        <spring-security.version>7.0.5</spring-security.version>
         <keycloak-client-thanlinardos-fork.version>999.0.0-SNAPSHOT</keycloak-client-thanlinardos-fork.version>
         <jjwt.version>[0.13.0,)</jjwt.version>
         <jacoco.version>0.8.14</jacoco.version>
+        <spring-web.version>7.0.7</spring-web.version>
+        <tomcat-embed-core.version>11.0.22</tomcat-embed-core.version>
+        <junit-jupiter-api.version>6.1.0</junit-jupiter-api.version>
 
-<!--        SonarQube-->
+        <!--        SonarQube-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
         <!-- Explicitly tell SonarQube which Java version is used to avoid "preview features" warning -->
-        <sonar.java.source>21</sonar.java.source>
+        <sonar.java.source>25</sonar.java.source>
 
         <sonar.dependencyCheck.basePath>${project.basedir}/owasp-dependency-check-logs</sonar.dependencyCheck.basePath>
         <sonar.dependencyCheck.htmlReportPath>${sonar.dependencyCheck.basePath}/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
@@ -79,14 +84,14 @@
         <dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors>true</dependency-check-maven.ossIndexWarnOnlyOnRemoteErrors>
         <aws-java-sdk.version>1.12.797</aws-java-sdk.version>
 
-<!--        plugins-->
-        <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
-        <flyway-maven-plugin.version>10.15.0</flyway-maven-plugin.version>
-        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
-        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <!--        plugins-->
+        <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
+        <flyway-maven-plugin.version>12.8.1</flyway-maven-plugin.version>
+        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
         <resteasy-core.version>6.2.15.Final</resteasy-core.version>
-        <mockito-core.version>5.20.0</mockito-core.version>
+        <mockito-core.version>5.23.0</mockito-core.version>
         <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     </properties>
@@ -113,17 +118,17 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>6.2.18</version>
+                <version>${spring-web.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>6.2.18</version>
+                <version>${spring-web.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>6.2.18</version>
+                <version>${spring-web.version}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -134,22 +139,27 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>6.2.18</version>
+                <version>${spring-web.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>[10.1.54,10.99.99]</version>
+                <version>${tomcat-embed-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
-                <version>[10.1.54,10.99.99]</version>
+                <version>${tomcat-embed-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-config</artifactId>
-                <version>${spring-cloud-config.version}</version>
+                <version>${spring-cloud-starter-config.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-config-client</artifactId>
+                <version>${spring-cloud-starter-config.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -159,7 +169,17 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
-                <version>6.5.10</version>
+                <version>7.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aspectj</artifactId>
+                <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jgit</groupId>
@@ -249,11 +269,6 @@
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>jakarta.persistence</groupId>
-                <artifactId>jakarta.persistence-api</artifactId>
-                <version>3.1.0</version>
-            </dependency>
-            <dependency>
                 <groupId>jakarta.transaction</groupId>
                 <artifactId>jakarta.transaction-api</artifactId>
                 <version>2.0.1</version>
@@ -261,7 +276,7 @@
             <dependency>
                 <groupId>org.springframework.vault</groupId>
                 <artifactId>spring-vault-core</artifactId>
-                <version>3.1.2</version>
+                <version>4.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.github.java-json-tools</groupId>
@@ -303,19 +318,19 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.27.7</version>
+                <version>4.0.0-M1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>5.14.0</version>
+                <version>${junit-jupiter-api.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
-                <version>5.14.0</version>
+                <version>${junit-jupiter-api.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -334,12 +349,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.21.1</version>
+                <version>2.22.0</version>
             </dependency>
             <dependency>
                 <groupId>tools.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>3.1.1</version>
+                <version>3.1.4</version>
             </dependency>
             <dependency>
                 <groupId>commons-jxpath</groupId>

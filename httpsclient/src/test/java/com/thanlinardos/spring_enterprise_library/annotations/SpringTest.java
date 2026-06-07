@@ -16,5 +16,5 @@ import java.lang.annotation.*;
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource("classpath:application-test.properties")
 @Import(TimeConfig.class)
-public @interface SpringTest {
+public @interface SpringTest { // TODO: Failed to introspect meta-annotation @Import on interface com.thanlinardos.spring_enterprise_library.annotations.SpringTest: java.lang.TypeNotPresentException: Type com.thanlinardos.spring_enterprise_library.time.config.TimeConfig not present
 }

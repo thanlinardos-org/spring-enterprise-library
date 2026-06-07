@@ -144,7 +144,7 @@ public class KeycloakUserService implements UserService {
 
     private void rollbackOnNewUserPersistenceError(Exception e, String userId) {
         log.error("Error persisting new user from keycloak with uuid: {}", userId, e);
-        try (Response ignored = KeycloakServiceUtils.handleRequest(realm.users()::delete, userId, OperationType.DELETE)) {
+        try (var _ = KeycloakServiceUtils.handleRequest(realm.users()::delete, userId, OperationType.DELETE)) {
             log.info("Successfully rolled back by deleting user from keycloak with uuid: {}", userId);
         } catch (Exception ex) {
             log.error("Failed to roll back by deleting user from keycloak with uuid: {}", userId, ex);
@@ -228,7 +228,7 @@ public class KeycloakUserService implements UserService {
             String serviceAccountId = clientResource.getServiceAccountUser().getId();
             UserResource user = findUserById(serviceAccountId);
             return keycloakMappingService.getRoleModels(getUserRoles(user));
-        } catch (BadRequestException e) {
+        } catch (BadRequestException _) {
             return Collections.emptySet();
         }
     }

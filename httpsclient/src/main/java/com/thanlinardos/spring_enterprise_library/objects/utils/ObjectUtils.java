@@ -277,7 +277,7 @@ public class ObjectUtils {
             return Optional.ofNullable(((WithId) entity).getId())
                     .map(Object::toString)
                     .orElse("null (from WithId#getId)");
-        } catch (Exception e) {
+        } catch (Exception _) {
             return "null (no WithId#getId method)";
         }
     }

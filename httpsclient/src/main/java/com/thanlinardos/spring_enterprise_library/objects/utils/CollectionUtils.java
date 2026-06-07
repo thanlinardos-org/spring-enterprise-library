@@ -777,7 +777,7 @@ public class CollectionUtils {
         @Override
         public int size() {
             int size = 0;
-            for (E ignored : this) {
+            for (var _ : this) {
                 size++;
             }
             return size;

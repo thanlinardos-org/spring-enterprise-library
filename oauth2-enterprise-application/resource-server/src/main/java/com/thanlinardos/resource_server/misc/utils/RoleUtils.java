@@ -3,12 +3,14 @@ package com.thanlinardos.resource_server.misc.utils;
 import com.thanlinardos.resource_server.model.entity.role.RoleJpa;
 import com.thanlinardos.resource_server.model.mapped.RoleModel;
 import com.thanlinardos.spring_enterprise_library.spring_cloud_security.model.base.RoleGrantedAuthority;
+import jakarta.annotation.Nonnull;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,15 +43,19 @@ public class RoleUtils {
     }
 
     public static int getPrivilegeLevelFromContextForRoles(Set<String> roleNames) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return authentication.getAuthorities().stream()
+        return getAuthenticationOrThrow().getAuthorities().stream()
                 .filter(RoleGrantedAuthority.class::isInstance)
                 .map(RoleGrantedAuthority.class::cast)
                 .filter(roleGrantedAuthority -> roleNames.contains(roleGrantedAuthority.getAuthority()))
                 .map(RoleGrantedAuthority::privilegeLevel)
                 .min(Integer::compareTo)
                 .orElse(Integer.MAX_VALUE);
+    }
+
+    @Nonnull
+    private static Authentication getAuthenticationOrThrow() {
+        return Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
     public static int getPrivilegeLevelFromContextForRole(String roleName) {

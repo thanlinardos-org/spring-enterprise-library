@@ -31,7 +31,7 @@ public class SecurityConfig extends SecurityCommonConfig<RoleModel> {
     @Bean
     @Order(1)
     @Override
-    protected SecurityFilterChain userLoginSecurityFilterChain(HttpSecurity http) throws Exception {
+    protected SecurityFilterChain userLoginSecurityFilterChain(HttpSecurity http) throws IllegalArgumentException {
         http.cors(Customizer.withDefaults());
         return super.userLoginSecurityFilterChain(http);
     }

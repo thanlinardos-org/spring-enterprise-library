@@ -11,11 +11,6 @@ spring:
     import: optional:configserver:${CONFIG_SERVER_URI}
   jpa:
     open-in-view: false # Enable for leaving JPA connection open while view rendering with thymeleaf
-  autoconfigure:
-    exclude:
-          - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-          - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-
 server:
   port: ${SERVER_PORT}
 

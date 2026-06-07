@@ -83,7 +83,7 @@ public class CustomConfigDataContextRefresher extends ConfigDataContextRefresher
                 for (PropertySource<?> source : sources) {
                     extract(source, result);
                 }
-            } catch (Exception ignored) {
+            } catch (Exception _) {
                 // Ignore exceptions that may occur while extracting properties from composite sources
             }
         } else if (parent instanceof EnumerablePropertySource<?> propertySource) {

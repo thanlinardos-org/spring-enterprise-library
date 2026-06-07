@@ -120,7 +120,7 @@ public class KeycloakServiceUtils {
     public static Optional<UserRepresentation> getServiceAccountUser(ClientResource clientResource) {
         try {
             return Optional.of(clientResource.getServiceAccountUser());
-        } catch (BadRequestException e) {
+        } catch (BadRequestException _) {
             return Optional.empty();
         }
     }

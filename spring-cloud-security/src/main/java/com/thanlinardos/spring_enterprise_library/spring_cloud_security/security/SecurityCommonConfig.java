@@ -115,9 +115,9 @@ public class SecurityCommonConfig<T extends Role> {
      *
      * @param http the HttpSecurity object to configure.
      * @return the configured SecurityFilterChain.
-     * @throws Exception if an error occurs during configuration.
+     * @throws IllegalArgumentException if an error occurs during configuration.
      */
-    protected SecurityFilterChain userLoginSecurityFilterChain(HttpSecurity http) throws Exception {
+    protected SecurityFilterChain userLoginSecurityFilterChain(HttpSecurity http) throws IllegalArgumentException {
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         http.csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
@@ -132,7 +132,7 @@ public class SecurityCommonConfig<T extends Role> {
         return http.build();
     }
 
-    private void configureOpaqueToken(HttpSecurity http) throws Exception {
+    private void configureOpaqueToken(HttpSecurity http) {
         http.oauth2ResourceServer(rsc ->
                 rsc.opaqueToken(otc ->
                         otc.authenticationConverter(new KeycloakOpaqueRoleConverter<>(roleService))
@@ -140,7 +140,7 @@ public class SecurityCommonConfig<T extends Role> {
                                 .introspectionClientCredentials(clientId, clientSecret)));
     }
 
-    private void configureJwtToken(HttpSecurity http) throws Exception {
+    private void configureJwtToken(HttpSecurity http) {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(getRoleConverter(authServer));
         http.oauth2ResourceServer(rsc ->
