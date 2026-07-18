@@ -19,12 +19,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-server</artifactId>
             <version>${spring-cloud-starter-config.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.i2p.crypto</groupId>
-                    <artifactId>eddsa</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

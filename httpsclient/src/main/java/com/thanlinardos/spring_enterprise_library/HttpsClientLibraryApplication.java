@@ -21,7 +21,7 @@ public class HttpsClientLibraryApplication {
      *
      * @param args command line arguments.
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(HttpsClientLibraryApplication.class, args);
     }
 }

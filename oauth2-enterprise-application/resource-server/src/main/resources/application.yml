@@ -6,6 +6,10 @@ spring:
     name: resource-server
   profiles:
     active: ${SPRING_PROFILES_ACTIVE}
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.security.oauth2.server.resource.autoconfigure.reactive.ReactiveOAuth2ResourceServerAutoConfiguration
+      - org.springframework.boot.security.oauth2.server.resource.autoconfigure.web.reactive.ReactiveOAuth2ResourceServerWebSecurityAutoConfiguration
   main:
     lazy-initialization: true   # Defer bean creation → biggest single startup gain
     banner-mode: off

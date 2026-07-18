@@ -27,7 +27,7 @@ public class ResourceServerApplication {
 
 	private final RoleCacheService roleCacheService;
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
 		SpringApplication.run(ResourceServerApplication.class, args);
 	}
 

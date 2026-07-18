@@ -50,7 +50,7 @@ public interface PrivilegedResource {
                 .map(Object::toString)
                 .filter(resourceAccess::containsKey)
                 .map(clientID -> clientID.equals(this.getPrincipalName()))
-                .orElse(principal.getSubject().equals(this.getPrincipalName()));
+                .orElse(this.getPrincipalName().equals(principal.getSubject()));
     }
 
     private boolean matchesPrincipalNameToEmail(Map<String, Object> resourceAccess, Map<String, Object> claims) {

@@ -29,6 +29,11 @@
 		<dependency>
 			<groupId>io.github.thanlinardos</groupId>
 			<artifactId>httpsclient</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.thanlinardos</groupId>
+			<artifactId>httpsclient</artifactId>
 			<version>${spring-enterprise-library.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
@@ -56,10 +61,6 @@
 				<exclusion>
 					<groupId>commons-lang</groupId>
 					<artifactId>commons-lang</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>software.amazon.ion</groupId>
-					<artifactId>ion-java</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>commons-configuration</groupId>
